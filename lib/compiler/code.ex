@@ -25,8 +25,7 @@ defmodule Compiler.Code do
       Map.has_key?(variables, name) ->
         {type, size, mem_addr} = variables |> Map.get(name)
         if (type == :var) do
-          v = parse_expression(expression)
-          line_number = line_number + lines(v)
+          {v, {variables, read_only, address, errors, line_number}} = parse_expression(expression, state, line)
           {"#{v}STORE #{mem_addr}\n", {variables, read_only, address, errors, line_number+1}}
         else
           {"", {variables, read_only, address, [{:accessing_array_as_var, {name}, line} | errors], line_number}}
@@ -48,9 +47,9 @@ defmodule Compiler.Code do
             a = parse_number(i)
             a = "#{a}STORE 0\n"
             line_number = line_number+lines(a)+1
-            b = parse_expression(expression)
+            {b, {variables, read_only, address, errors, line_number}} = parse_expression(expression, state, line)
             b = "#{b}STOREI 0\n"
-            line_number = line_number+lines(b)+1
+            line_number = line_number+1
             {"#{a}#{b}", {variables, read_only, address, errors, line_number}}
           else
             {"", {variables, read_only, address, [{:out_of_array_range, {name}, line} | errors], line_number}}
@@ -76,9 +75,9 @@ defmodule Compiler.Code do
               a = parse_number(mem_addr)
               a = "#{a}ADD #{v_mem_addr}\nSTORE 0\n"
               line_number = line_number+lines(a)+2
-              b = parse_expression(expression)
+              {b, {variables, read_only, address, errors, line_number}} = parse_expression(expression, state, line)
               b = "#{b}STOREI 0\n"
-              line_number = line_number+lines(b)+1
+              line_number = line_number+1
               {"#{a}#{b}", {variables, read_only, address, errors, line_number}}
             true ->
               {"", {variables, read_only, address, [{:var_not_found, {name}, line} | errors], line_number}}
@@ -91,12 +90,49 @@ defmodule Compiler.Code do
     end
   end
 
-  def lines(s) do
-    s |> String.split |> Enum.count
+  def parse_expression({:number, n}, {variables, read_only, address, errors, line_number}, line) do
+    assembly = parse_number(n)
+    l = lines(assembly)
+    {assembly, {variables, read_only, address, errors, line_number+l}}
   end
 
-  def parse_expression({:number, n}) do
-    parse_number(n)
+  def parse_expression({:var, v}, {variables, read_only, address, errors, line_number}, line) do
+    cond do
+      Map.has_key?(read_only, v) or Map.has_key?(variables, v) ->
+        {_type, _size, mem_addr} = Map.get_lazy(read_only, v, fn -> Map.get(variables, v) end)
+
+        {"LOAD #{mem_addr}\n", {variables, read_only, address, errors, line_number+1}}
+      true ->
+        {"", {variables, read_only, address, [{:var_not_found, {v}, line} | errors], line_number}}
+    end
+  end
+
+  def parse_expression({:array, v, :number, i}, {variables, read_only, address, errors, line_number}, line) do
+    cond do
+      Map.has_key?(read_only, v) or Map.has_key?(variables, v) ->
+        {type, size, mem_addr} = Map.get_lazy(read_only, v, fn -> Map.get(variables, v) end)
+        if (type == :array) do
+          if (i < size) do
+            i = mem_addr+i
+            a = parse_number(i)
+            a = "#{a}STORE 0\n"
+            line_number = line_number+lines(a)+1
+            {"LOADI 0\n", {variables, read_only, address, errors, line_number+1}}
+          else
+            {"", {variables, read_only, address, [{:out_of_array_range, {v}, line} | errors], line_number}}
+          end
+
+        else
+          {"", {variables, read_only, address, [{:accessing_var_as_array, {v}, line} | errors], line_number}}
+        end
+
+      true ->
+        {"", {variables, read_only, address, [{:var_not_found, {v}, line} | errors], line_number}}
+    end
+  end
+
+  defp put_in_0_arr_mem_addr(mem_addr, i) do
+
   end
 
   defp parse_number(n) do
@@ -110,6 +146,10 @@ defmodule Compiler.Code do
     code = Enum.join(code, "")
     code = String.trim_leading(code, "SHL\n")
     "ZERO\n#{code}"
+  end
+
+  def lines(s) do
+    s |> String.split |> Enum.count
   end
 
 end

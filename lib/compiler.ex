@@ -23,6 +23,7 @@ defmodule Compiler do
       {:ok, assembly} ->
         {:ok, file} = File.open(filename <> ".out", [:write])
         IO.write(file, assembly)
+        IO.write(file, "HALT\n")
         File.close(file)
       {:error, errors} ->
         IO.inspect(errors)

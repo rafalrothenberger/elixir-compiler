@@ -3,5 +3,6 @@ VAR
      a b       c[123] d
 BEGIN
 a := 1;
-c[a] := 1;
+c[a] := 12;
+d := c[1];
 END
