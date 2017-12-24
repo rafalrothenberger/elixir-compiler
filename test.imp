@@ -3,4 +3,5 @@ VAR
      a b       c[123] d
 BEGIN
 a := 1;
+b := 1;
 END

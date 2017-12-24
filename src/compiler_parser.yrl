@@ -15,7 +15,7 @@ declarations -> declaration declarations : ['$1' | '$2'].
 code -> cmd : ['$1'].
 code -> cmd code : ['$1' | '$2'].
 
-cmd -> variable ':=' expression';' : {line_number('$2'), {assign, '$1', '$3'}}.
+cmd -> variable ':=' expression';' : {line_number('$2'), assign, {'$1', '$3'}}.
 
 expression -> value : '$1'.
 

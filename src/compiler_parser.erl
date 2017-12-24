@@ -534,7 +534,7 @@ yeccpars2_26_(__Stack0) ->
 yeccpars2_27_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
-   { line_number ( __2 ) , { assign , __1 , __3 } }
+   { line_number ( __2 ) , assign , { __1 , __3 } }
   end | __Stack].
 
 

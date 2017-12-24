@@ -22,55 +22,13 @@ defmodule Compiler do
 
 
   defp parse(%{code: code, declarations: declarations}) do
-    a = prepare_variable_map(declarations)
+    a = Compiler.Declarations.prepare_variable_map(declarations)
     IO.inspect(a)
     {variables, address, errors} = a
+    a = Compiler.Code.gen_assembly(code, {variables, %{}, address, errors}, "")
+    IO.inspect(a)
   end
 
-  defp prepare_variable_map(declarations) do
-    for_each_declaration(declarations, %{}, 0, [])
-  end
 
-  defp for_each_declaration([], variables, address, errors) do
-    {variables, address, errors}
-  end
-
-  defp for_each_declaration([declaration], variables, address, errors) do
-    case declaration do
-      {:var, name, line} ->
-        if (Map.has_key?(variables, name)) do
-          {variables, address, [{:duplicate, {name}, line} | errors]}
-        else
-          variables = Map.put(variables, name, {:var, 1, address})
-          {variables, address+1, errors}
-        end
-      {:array, name, len, line} ->
-        if (Map.has_key?(variables, name)) do
-          {variables, address, [{:duplicate, {name}, line} | errors]}
-        else
-          variables = Map.put(variables, name, {:array, len, address})
-          {variables, address+len, errors}
-        end
-    end
-  end
-
-  defp for_each_declaration([declaration | declarations], variables, address, errors) do
-    case declaration do
-      {:var, name, line} ->
-        if (Map.has_key?(variables, name)) do
-          {variables, address, [{:duplicate, {name}, line} | errors]}
-        else
-          variables = Map.put(variables, name, {:var, 1, address})
-          for_each_declaration(declarations, variables, address+1, errors)
-        end
-      {:array, name, len, line} ->
-        if (Map.has_key?(variables, name)) do
-          {variables, address, [{:duplicate, {name}, line} | errors]}
-        else
-          variables = Map.put(variables, name, {:array, len, address})
-          for_each_declaration(declarations, variables, address+len, errors)
-        end
-    end
-  end
 
 end
