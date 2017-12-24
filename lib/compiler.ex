@@ -3,6 +3,7 @@ defmodule Compiler do
   def run(filename) do
     {:ok, file} = File.open(filename, [:read])
     program = IO.read(file, :all)
+    File.close(file)
 #    program = String.replace(program, ~r/\([\s\S]+\)/, "")
 #    program = String.replace(program, ~r/[\s\t\n]+/, " ")
 #    program = String.trim(program)
@@ -17,7 +18,15 @@ defmodule Compiler do
 #    res = :compiler_parser.parse(tokens)
     IO.inspect(res)
     IO.puts("\n\n\n")
-    parse(res)
+    res = parse(res)
+    case res do
+      {:ok, assembly} ->
+        {:ok, file} = File.open(filename <> ".out", [:write])
+        IO.write(file, assembly)
+        File.close(file)
+      {:error, errors} ->
+        IO.inspect(errors)
+    end
   end
 
 
@@ -25,8 +34,7 @@ defmodule Compiler do
     a = Compiler.Declarations.prepare_variable_map(declarations)
     IO.inspect(a)
     {variables, address, errors} = a
-    a = Compiler.Code.gen_assembly(code, {variables, %{}, address, errors}, "")
-    IO.inspect(a)
+    Compiler.Code.gen_assembly(code, {variables, %{}, address, errors, 0}, "")
   end
 
 

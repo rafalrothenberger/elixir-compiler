@@ -2,13 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cf440e8c-5eb7-4c2b-9c45-3f0e3bce5fc3" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/lib/compiler/code.ex" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/lib/compiler/declarations.ex" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/config/config.exs" afterPath="$PROJECT_DIR$/config/config.exs" />
       <change beforePath="$PROJECT_DIR$/lib/compiler.ex" afterPath="$PROJECT_DIR$/lib/compiler.ex" />
-      <change beforePath="$PROJECT_DIR$/src/compiler_parser.erl" afterPath="$PROJECT_DIR$/src/compiler_parser.erl" />
-      <change beforePath="$PROJECT_DIR$/src/compiler_parser.yrl" afterPath="$PROJECT_DIR$/src/compiler_parser.yrl" />
+      <change beforePath="$PROJECT_DIR$/lib/compiler/code.ex" afterPath="$PROJECT_DIR$/lib/compiler/code.ex" />
       <change beforePath="$PROJECT_DIR$/test.imp" afterPath="$PROJECT_DIR$/test.imp" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,21 +16,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="test.imp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test.imp">
+      <file leaf-file-name="compiler.ex" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/compiler.ex">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" column="1" lean-forward="false" selection-start-line="5" selection-start-column="1" selection-end-line="5" selection-end-column="1" />
+            <state relative-caret-position="345">
+              <caret line="23" column="8" lean-forward="false" selection-start-line="23" selection-start-column="8" selection-end-line="23" selection-end-column="8" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="compiler.ex" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/compiler.ex">
+      <file leaf-file-name="test.imp.out" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/test.imp.out">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="405">
-              <caret line="27" column="58" lean-forward="false" selection-start-line="27" selection-start-column="58" selection-end-line="27" selection-end-column="65" />
+            <state relative-caret-position="180">
+              <caret line="12" column="3" lean-forward="true" selection-start-line="12" selection-start-column="3" selection-end-line="12" selection-end-column="3" />
               <folding />
             </state>
           </provider>
@@ -44,7 +40,17 @@
         <entry file="file://$PROJECT_DIR$/config/config.exs">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="240">
-              <caret line="16" column="6" lean-forward="true" selection-start-line="16" selection-start-column="6" selection-end-line="16" selection-end-column="42" />
+              <caret line="16" column="6" lean-forward="false" selection-start-line="16" selection-start-column="6" selection-end-line="16" selection-end-column="42" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="test.imp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test.imp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="75">
+              <caret line="5" column="3" lean-forward="false" selection-start-line="5" selection-start-column="3" selection-end-line="5" selection-end-column="3" />
               <folding />
             </state>
           </provider>
@@ -53,18 +59,18 @@
       <file leaf-file-name="code.ex" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/compiler/code.ex">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="21" column="37" lean-forward="true" selection-start-line="21" selection-start-column="37" selection-end-line="21" selection-end-column="37" />
+            <state relative-caret-position="566">
+              <caret line="81" column="80" lean-forward="false" selection-start-line="81" selection-start-column="80" selection-end-line="81" selection-end-column="80" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="declarations.ex" pinned="false" current-in-tab="true">
+      <file leaf-file-name="declarations.ex" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/compiler/declarations.ex">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="11" column="52" lean-forward="true" selection-start-line="11" selection-start-column="52" selection-end-line="11" selection-end-column="52" />
+            <state relative-caret-position="15">
+              <caret line="4" column="84" lean-forward="false" selection-start-line="4" selection-start-column="84" selection-end-line="4" selection-end-column="84" />
               <folding />
             </state>
           </provider>
@@ -97,11 +103,11 @@
       <list>
         <option value="$PROJECT_DIR$/src/compiler_parser.yrl" />
         <option value="$PROJECT_DIR$/src/compiler_lexer.xrl" />
-        <option value="$PROJECT_DIR$/lib/compiler/code.ex" />
-        <option value="$PROJECT_DIR$/test.imp" />
         <option value="$PROJECT_DIR$/config/config.exs" />
-        <option value="$PROJECT_DIR$/lib/compiler.ex" />
         <option value="$PROJECT_DIR$/lib/compiler/declarations.ex" />
+        <option value="$PROJECT_DIR$/lib/compiler.ex" />
+        <option value="$PROJECT_DIR$/test.imp" />
+        <option value="$PROJECT_DIR$/lib/compiler/code.ex" />
       </list>
     </option>
   </component>
@@ -291,12 +297,12 @@
       <workItem from="1514052091357" duration="5511000" />
       <workItem from="1514058906316" duration="7969000" />
       <workItem from="1514075938089" duration="1829000" />
-      <workItem from="1514113954738" duration="9238000" />
+      <workItem from="1514113954738" duration="15847000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="24547000" />
+    <option name="totallyTimeSpent" value="31156000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="22" width="1920" height="1178" extended-state="6" />
@@ -428,18 +434,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/compiler/code.ex">
+    <entry file="file://$PROJECT_DIR$/lib/compiler.ex">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" column="37" lean-forward="true" selection-start-line="21" selection-start-column="37" selection-end-line="21" selection-end-column="37" />
+        <state relative-caret-position="345">
+          <caret line="23" column="8" lean-forward="false" selection-start-line="23" selection-start-column="8" selection-end-line="23" selection-end-column="8" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test.imp">
+    <entry file="file://$PROJECT_DIR$/lib/compiler/declarations.ex">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="1" lean-forward="false" selection-start-line="5" selection-start-column="1" selection-end-line="5" selection-end-column="1" />
+        <state relative-caret-position="15">
+          <caret line="4" column="84" lean-forward="false" selection-start-line="4" selection-start-column="84" selection-end-line="4" selection-end-column="84" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/compiler/code.ex">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="566">
+          <caret line="81" column="80" lean-forward="false" selection-start-line="81" selection-start-column="80" selection-end-line="81" selection-end-column="80" />
           <folding />
         </state>
       </provider>
@@ -447,23 +461,23 @@
     <entry file="file://$PROJECT_DIR$/config/config.exs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
-          <caret line="16" column="6" lean-forward="true" selection-start-line="16" selection-start-column="6" selection-end-line="16" selection-end-column="42" />
+          <caret line="16" column="6" lean-forward="false" selection-start-line="16" selection-start-column="6" selection-end-line="16" selection-end-column="42" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/compiler.ex">
+    <entry file="file://$PROJECT_DIR$/test.imp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="27" column="58" lean-forward="false" selection-start-line="27" selection-start-column="58" selection-end-line="27" selection-end-column="65" />
+        <state relative-caret-position="75">
+          <caret line="5" column="3" lean-forward="false" selection-start-line="5" selection-start-column="3" selection-end-line="5" selection-end-column="3" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/compiler/declarations.ex">
+    <entry file="file://$PROJECT_DIR$/test.imp.out">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="52" lean-forward="true" selection-start-line="11" selection-start-column="52" selection-end-line="11" selection-end-column="52" />
+        <state relative-caret-position="180">
+          <caret line="12" column="3" lean-forward="true" selection-start-line="12" selection-start-column="3" selection-end-line="12" selection-end-column="3" />
           <folding />
         </state>
       </provider>
