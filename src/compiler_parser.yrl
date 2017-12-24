@@ -1,21 +1,21 @@
-Nonterminals input declarations declaration code line variable value expression.
-Terminals 'VAR' 'BEGIN' 'END' '\n' identifier number '[' ']' ' ' ':=' ';'.
+Nonterminals input declarations declaration code cmd variable value expression.
+Terminals VAR BEGIN END '\n' identifier number '[' ']' ' ' ':=' ';'.
 Rootsymbol input.
 
-input -> 'VAR' '\n' declarations '\n' 'BEGIN' '\n' code 'END': #{declarations => '$3', code => '$7'}.
+input -> VAR declarations BEGIN code END: #{declarations => '$2', code => '$4'}.
 
 % '\n' 'BEGIN' '\n' code '\n' 'END'
 
-declaration -> identifier'['number']' : {array, extract_value('$1'), list_to_integer(extract_value('$3'))}.
-declaration -> identifier : {var, extract_value('$1')}.
+declaration -> identifier'['number']' : {array, extract_value('$1'), list_to_integer(extract_value('$3')), declaration_line_number('$1')}.
+declaration -> identifier : {var, extract_value('$1'), declaration_line_number('$1')}.
 
 declarations -> declaration : ['$1'].
-declarations -> declaration ' ' declarations : ['$1' | '$3'].
+declarations -> declaration declarations : ['$1' | '$2'].
 
-code -> line '\n' : ['$1'].
-code -> line '\n' code : ['$1' | '$3'].
+code -> cmd : ['$1'].
+code -> cmd code : ['$1' | '$2'].
 
-line -> variable ' ' ':=' ' ' expression';' : {assign, '$1', '$5'}.
+cmd -> variable ':=' expression';' : {line_number('$2'), {assign, '$1', '$3'}}.
 
 expression -> value : '$1'.
 
@@ -29,3 +29,5 @@ variable -> identifier'['identifier']' : {array, extract_value('$1'), var, extra
 
 Erlang code.
 extract_value({_Token, _Line, Value}) -> Value.
+line_number({_Token, Line}) -> Line.
+declaration_line_number({_Token, Line, _Value}) -> Line.
