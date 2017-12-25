@@ -1,5 +1,5 @@
 Nonterminals input declarations declaration code cmd variable value expression.
-Terminals VAR BEGIN END '\n' identifier number '[' ']' ' ' ':=' ';'.
+Terminals VAR BEGIN END '\n' identifier number '[' ']' ' ' ':=' ';' '+'.
 Rootsymbol input.
 
 input -> VAR declarations BEGIN code END: #{declarations => '$2', code => '$4'}.
@@ -18,6 +18,7 @@ code -> cmd code : ['$1' | '$2'].
 cmd -> variable ':=' expression';' : {line_number('$2'), assign, {'$1', '$3'}}.
 
 expression -> value : '$1'.
+expression -> value '+' value : {add, '$1', '$3'} .
 
 value -> number : {number, list_to_integer(extract_value('$1'))}.
 value -> variable : '$1'.

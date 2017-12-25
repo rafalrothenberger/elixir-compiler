@@ -96,14 +96,17 @@ defmodule Compiler.Code do
     {assembly, {variables, read_only, address, errors, line_number+l}}
   end
 
-  def parse_expression({:var, v}, {variables, read_only, address, errors, line_number}, line) do
+  def parse_expression({:var, name}, {variables, read_only, address, errors, line_number}, line) do
     cond do
-      Map.has_key?(read_only, v) or Map.has_key?(variables, v) ->
-        {_type, _size, mem_addr} = Map.get_lazy(read_only, v, fn -> Map.get(variables, v) end)
-
-        {"LOAD #{mem_addr}\n", {variables, read_only, address, errors, line_number+1}}
+      Map.has_key?(read_only, name) or Map.has_key?(variables, name) ->
+        {type, _size, mem_addr} = Map.get_lazy(read_only, name, fn -> Map.get(variables, name) end)
+        if (type == :var) do
+          {"LOAD #{mem_addr}\n", {variables, read_only, address, errors, line_number+1}}
+        else
+          {"", {variables, read_only, address, [{:accessing_array_as_var, {name}, line} | errors], line_number}}
+        end
       true ->
-        {"", {variables, read_only, address, [{:var_not_found, {v}, line} | errors], line_number}}
+        {"", {variables, read_only, address, [{:var_not_found, {name}, line} | errors], line_number}}
     end
   end
 
@@ -131,7 +134,59 @@ defmodule Compiler.Code do
     end
   end
 
-  defp put_in_0_arr_mem_addr(mem_addr, i) do
+  def parse_expression({:add, {:number, a}, {:number, b}}, {variables, read_only, address, errors, line_number}, line) do
+    assembly = parse_number(a+b)
+    {assembly, {variables, read_only, address, errors, line_number+lines(assembly)}}
+  end
+
+  def parse_expression({:add, {:var, name}, {:number, n}}, {variables, read_only, address, errors, line_number}, line) do
+    cond do
+      Map.has_key?(read_only, name) or Map.has_key?(variables, name) ->
+        {type, _size, mem_addr} = Map.get_lazy(read_only, name, fn -> Map.get(variables, name) end)
+        if (type == :var) do
+
+          number = parse_number(n)
+          line_number = line_number + lines(number)
+
+          {"ADD #{mem_addr}\n", {variables, read_only, address, errors, line_number+1}}
+        else
+          {"", {variables, read_only, address, [{:accessing_array_as_var, {name}, line} | errors], line_number}}
+        end
+      true ->
+        {"", {variables, read_only, address, [{:var_not_found, {name}, line} | errors], line_number}}
+    end
+  end
+
+  def parse_expression({:add, {:number, n}, {:var, name}}, {variables, read_only, address, errors, line_number}, line) do
+    parse_expression({:add, {:var, name}, {:number, n}}, {variables, read_only, address, errors, line_number}, line)
+  end
+
+  def parse_expression({:add, {:var, left}, {:var, right}}, {variables, read_only, address, errors, line_number}, line) do
+    cond do
+      Map.has_key?(read_only, left) or Map.has_key?(variables, left) ->
+        {type, _size, mem_addr_left} = Map.get_lazy(read_only, left, fn -> Map.get(variables, left) end)
+        if (type == :var) do
+          cond do
+            Map.has_key?(read_only, right) or Map.has_key?(variables, right) ->
+              {type, _size, mem_addr_right} = Map.get_lazy(read_only, right, fn -> Map.get(variables, right) end)
+              if (type == :var) do
+
+                {"LOAD #{mem_addr_left}\nADD #{mem_addr_right}\n", {variables, read_only, address, errors, line_number+2}}
+              else
+                {"", {variables, read_only, address, [{:accessing_array_as_var, {right}, line} | errors], line_number}}
+              end
+            true ->
+              {"", {variables, read_only, address, [{:var_not_found, {right}, line} | errors], line_number}}
+          end
+        else
+          {"", {variables, read_only, address, [{:accessing_array_as_var, {left}, line} | errors], line_number}}
+        end
+      true ->
+        {"", {variables, read_only, address, [{:var_not_found, {left}, line} | errors], line_number}}
+    end
+  end
+
+  defp calc_arr_mem_addr(mem_addr, i) do
 
   end
 

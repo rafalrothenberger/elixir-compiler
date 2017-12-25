@@ -1,6 +1,6 @@
 -module(compiler_parser).
 -export([parse/1, parse_and_scan/1, format_error/1]).
--file("src/compiler_parser.yrl", 30).
+-file("src/compiler_parser.yrl", 31).
 extract_value({_Token, _Line, Value}) -> Value.
 line_number({_Token, Line}) -> Line.
 declaration_line_number({_Token, Line, _Value}) -> Line.
@@ -237,6 +237,10 @@ yeccpars2(26=S, Cat, Ss, Stack, T, Ts, Tzr) ->
  yeccpars2_26(S, Cat, Ss, Stack, T, Ts, Tzr);
 yeccpars2(27=S, Cat, Ss, Stack, T, Ts, Tzr) ->
  yeccpars2_27(S, Cat, Ss, Stack, T, Ts, Tzr);
+yeccpars2(28=S, Cat, Ss, Stack, T, Ts, Tzr) ->
+ yeccpars2_22(S, Cat, Ss, Stack, T, Ts, Tzr);
+%% yeccpars2(29=S, Cat, Ss, Stack, T, Ts, Tzr) ->
+%%  yeccpars2_29(S, Cat, Ss, Stack, T, Ts, Tzr);
 yeccpars2(Other, _, _, _, _, _, _) ->
  erlang:error({yecc_bug,"1.4",{missing_state_in_action_table, Other}}).
 
@@ -379,6 +383,8 @@ yeccpars2_22(_, _, _, _, T, _, _) ->
 yeccpars2_23(_S, Cat, Ss, Stack, T, Ts, Tzr) ->
  yeccgoto_value(hd(Ss), Cat, Ss, Stack, T, Ts, Tzr).
 
+yeccpars2_24(S, '+', Ss, Stack, T, Ts, Tzr) ->
+ yeccpars1(S, 28, Ss, Stack, T, Ts, Tzr);
 yeccpars2_24(_S, Cat, Ss, Stack, T, Ts, Tzr) ->
  yeccgoto_expression(hd(Ss), Cat, Ss, Stack, T, Ts, Tzr).
 
@@ -396,6 +402,13 @@ yeccpars2_27(_S, Cat, Ss, Stack, T, Ts, Tzr) ->
  [_,_,_|Nss] = Ss,
  NewStack = yeccpars2_27_(Stack),
  yeccgoto_cmd(hd(Nss), Cat, Nss, NewStack, T, Ts, Tzr).
+
+%% yeccpars2_28: see yeccpars2_22
+
+yeccpars2_29(_S, Cat, Ss, Stack, T, Ts, Tzr) ->
+ [_,_|Nss] = Ss,
+ NewStack = yeccpars2_29_(Stack),
+ yeccgoto_expression(hd(Nss), Cat, Nss, NewStack, T, Ts, Tzr).
 
 -dialyzer({nowarn_function, yeccgoto_cmd/7}).
 yeccgoto_cmd(10, Cat, Ss, Stack, T, Ts, Tzr) ->
@@ -430,8 +443,10 @@ yeccgoto_input(0, Cat, Ss, Stack, T, Ts, Tzr) ->
  yeccpars2_1(1, Cat, Ss, Stack, T, Ts, Tzr).
 
 -dialyzer({nowarn_function, yeccgoto_value/7}).
-yeccgoto_value(22=_S, Cat, Ss, Stack, T, Ts, Tzr) ->
- yeccpars2_24(_S, Cat, Ss, Stack, T, Ts, Tzr).
+yeccgoto_value(22, Cat, Ss, Stack, T, Ts, Tzr) ->
+ yeccpars2_24(24, Cat, Ss, Stack, T, Ts, Tzr);
+yeccgoto_value(28=_S, Cat, Ss, Stack, T, Ts, Tzr) ->
+ yeccpars2_29(_S, Cat, Ss, Stack, T, Ts, Tzr).
 
 -dialyzer({nowarn_function, yeccgoto_variable/7}).
 yeccgoto_variable(10, Cat, Ss, Stack, T, Ts, Tzr) ->
@@ -439,6 +454,8 @@ yeccgoto_variable(10, Cat, Ss, Stack, T, Ts, Tzr) ->
 yeccgoto_variable(13, Cat, Ss, Stack, T, Ts, Tzr) ->
  yeccpars2_11(11, Cat, Ss, Stack, T, Ts, Tzr);
 yeccgoto_variable(22=_S, Cat, Ss, Stack, T, Ts, Tzr) ->
+ yeccpars2_23(_S, Cat, Ss, Stack, T, Ts, Tzr);
+yeccgoto_variable(28=_S, Cat, Ss, Stack, T, Ts, Tzr) ->
  yeccpars2_23(_S, Cat, Ss, Stack, T, Ts, Tzr).
 
 -compile({inline,yeccpars2_4_/1}).
@@ -482,7 +499,7 @@ yeccpars2_13_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_14_/1}).
--file("src/compiler_parser.yrl", 21).
+-file("src/compiler_parser.yrl", 22).
 yeccpars2_14_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -490,7 +507,7 @@ yeccpars2_14_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_18_/1}).
--file("src/compiler_parser.yrl", 22).
+-file("src/compiler_parser.yrl", 23).
 yeccpars2_18_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -498,7 +515,7 @@ yeccpars2_18_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_19_/1}).
--file("src/compiler_parser.yrl", 23).
+-file("src/compiler_parser.yrl", 24).
 yeccpars2_19_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -522,7 +539,7 @@ yeccpars2_21_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_26_/1}).
--file("src/compiler_parser.yrl", 18).
+-file("src/compiler_parser.yrl", 19).
 yeccpars2_26_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -537,5 +554,13 @@ yeccpars2_27_(__Stack0) ->
    { line_number ( __2 ) , assign , { __1 , __3 } }
   end | __Stack].
 
+-compile({inline,yeccpars2_29_/1}).
+-file("src/compiler_parser.yrl", 17).
+yeccpars2_29_(__Stack0) ->
+ [__3,__2,__1 | __Stack] = __Stack0,
+ [begin
+   { add , __1 , __3 }
+  end | __Stack].
 
--file("src/compiler_parser.yrl", 34).
+
+-file("src/compiler_parser.yrl", 35).
