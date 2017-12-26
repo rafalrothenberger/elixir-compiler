@@ -2,6 +2,7 @@
 VAR
      a b       c[123] d
 BEGIN
-a := 1 + 1;
-b := a + a;
+a := 1;
+c[1] := 1;
+c[a] := 1;
 END

@@ -20,12 +20,12 @@ cmd -> variable ':=' expression';' : {line_number('$2'), assign, {'$1', '$3'}}.
 expression -> value : '$1'.
 expression -> value '+' value : {add, '$1', '$3'} .
 
-value -> number : {number, list_to_integer(extract_value('$1'))}.
+value -> number : {number, {list_to_integer(extract_value('$1'))}}.
 value -> variable : '$1'.
 
-variable -> identifier : {var, extract_value('$1')}.
-variable -> identifier'['number']' : {array, extract_value('$1'), number, list_to_integer(extract_value('$3'))}.
-variable -> identifier'['identifier']' : {array, extract_value('$1'), var, extract_value('$3')}.
+variable -> identifier : {var, extract_value('$1'), {}}.
+variable -> identifier'['number']' : {array, extract_value('$1'), {number, list_to_integer(extract_value('$3'))}}.
+variable -> identifier'['identifier']' : {array, extract_value('$1'), {var, extract_value('$3')}}.
 
 
 Erlang code.

@@ -9,88 +9,51 @@ defmodule Compiler.Code do
   end
 
   def gen_assembly([cmd], {variables, read_only, address, errors, line_number} = state, assembly) do
-    {code, state} = parse_cmd(cmd, state)
-    gen_assembly([], state, "#{assembly}#{code}")
+    {code, {variables, read_only, address, errors, line_number}} = parse_cmd(cmd, state)
+    gen_assembly([], {variables, read_only, address, errors, line_number + lines(code)}, "#{assembly}#{code}")
   end
 
   def gen_assembly([cmd|cmds], {variables, read_only, address, errors, line_number} = state, assembly) do
-    {code, state} = parse_cmd(cmd, state)
-    gen_assembly(cmds, state, "#{assembly}#{code}")
+    {code, {variables, read_only, address, errors, line_number}} = parse_cmd(cmd, state)
+    gen_assembly(cmds, {variables, read_only, address, errors, line_number + lines(code)}, "#{assembly}#{code}")
   end
 
-  defp parse_cmd({line, :assign, {{:var, name}, expression}}, {variables, read_only, address, errors, line_number} = state) do
+  defp parse_cmd({line, :assign, {{type, name, _ops} = target, expression}}, {variables, read_only, address, errors, line_number} = state) do
     cond do
       Map.has_key?(read_only, name) ->
         {"", {variables, read_only, address, [{:assign_read_only, {name}, line} | errors], line_number}}
       Map.has_key?(variables, name) ->
-        {type, size, mem_addr} = variables |> Map.get(name)
-        if (type == :var) do
-          {v, {variables, read_only, address, errors, line_number}} = parse_expression(expression, state, line)
-          {"#{v}STORE #{mem_addr}\n", {variables, read_only, address, errors, line_number+1}}
+        var = Map.get(variables, name)
+        {var_type, _var_size, _var_mem_addr} = var
+        if (var_type == type) do
+          {assembly, state} = parse_expression(expression, state, line)
+          assign({target, var}, assembly, state, line)
         else
-          {"", {variables, read_only, address, [{:accessing_array_as_var, {name}, line} | errors], line_number}}
-        end
-      true ->
-        {"", {variables, read_only, address, [{:var_not_found, {name}, line} | errors], line_number}}
-    end
-  end
-
-  defp parse_cmd({line, :assign, {{:array, name, :number, i}, expression}}, {variables, read_only, address, errors, line_number} = state) do
-    cond do
-      Map.has_key?(read_only, name) ->
-        {"", {variables, read_only, address, [{:assign_read_only, {name}, line} | errors], line_number}}
-      Map.has_key?(variables, name) ->
-        {type, size, mem_addr} = variables |> Map.get(name)
-        if (type == :array) do
-          if (i < size) do
-            i = mem_addr+i
-            a = parse_number(i)
-            a = "#{a}STORE 0\n"
-            line_number = line_number+lines(a)+1
-            {b, {variables, read_only, address, errors, line_number}} = parse_expression(expression, state, line)
-            b = "#{b}STOREI 0\n"
-            line_number = line_number+1
-            {"#{a}#{b}", {variables, read_only, address, errors, line_number}}
-          else
-            {"", {variables, read_only, address, [{:out_of_array_range, {name}, line} | errors], line_number}}
+          case var_type do
+            :array -> {"", {variables, read_only, address, [{:accessing_array_as_var, {name}, line} | errors], line_number}}
+            :var -> {"", {variables, read_only, address, [{:accessing_var_as_array, {name}, line} | errors], line_number}}
           end
-        else
-          {"", {variables, read_only, address, [{:accessing_var_as_array, {name}, line} | errors], line_number}}
         end
       true ->
         {"", {variables, read_only, address, [{:var_not_found, {name}, line} | errors], line_number}}
     end
   end
 
-  defp parse_cmd({line, :assign, {{:array, name, :var, v}, expression}}, {variables, read_only, address, errors, line_number} = state) do
-    cond do
-      Map.has_key?(read_only, name) ->
-        {"", {variables, read_only, address, [{:assign_read_only, {name}, line} | errors], line_number}}
-      Map.has_key?(variables, name) ->
-        {type, size, mem_addr} = variables |> Map.get(name)
-        if (type == :array) do
-          cond do
-            Map.has_key?(read_only, v) or Map.has_key?(variables, v) ->
-              {v_type, _v_size, v_mem_addr} = Map.get_lazy(read_only, v, fn -> Map.get(variables, v) end)
-              a = parse_number(mem_addr)
-              a = "#{a}ADD #{v_mem_addr}\nSTORE 0\n"
-              line_number = line_number+lines(a)+2
-              {b, {variables, read_only, address, errors, line_number}} = parse_expression(expression, state, line)
-              b = "#{b}STOREI 0\n"
-              line_number = line_number+1
-              {"#{a}#{b}", {variables, read_only, address, errors, line_number}}
-            true ->
-              {"", {variables, read_only, address, [{:var_not_found, {name}, line} | errors], line_number}}
-          end
-        else
-          {"", {variables, read_only, address, [{:accessing_var_as_array, {name}, line} | errors], line_number}}
-        end
-      true ->
-        {"", {variables, read_only, address, [{:var_not_found, {name}, line} | errors], line_number}}
-    end
+  defp assign({{:var, _name, {}}, {_type, _size, mem_addr}}, expression_code, state, _line) do
+    {"#{expression_code}STORE #{mem_addr}\n", state}
   end
 
-  def parse_expression({:number, n}, {variables, read_only, address, errors, line_number}, line) do
+  defp assign({{:array, _name, {:number, _i}}, {_type, _size, _mem_addr}} = var, expression_code, {variables, read_only, address, errors, line_number} = state, line) do
+    {assembly, state} = calc_arr_mem_addr(var, state, line)
+    {"#{assembly}#{expression_code}STOREI 0\n",state}
+  end
+
+  defp assign({{:array, _name, {:var, _i}}, {_type, _size, _mem_addr}} = var, expression_code, {variables, read_only, address, errors, line_number} = state, line) do
+    {assembly, state} = calc_arr_mem_addr(var, state, line)
+    {"#{assembly}#{expression_code}STOREI 0\n",state}
+  end
+
+  def parse_expression({:number, {n}}, {variables, read_only, address, errors, line_number}, line) do
     assembly = parse_number(n)
     l = lines(assembly)
     {assembly, {variables, read_only, address, errors, line_number+l}}
@@ -186,8 +149,34 @@ defmodule Compiler.Code do
     end
   end
 
-  defp calc_arr_mem_addr(mem_addr, i) do
+  defp calc_arr_mem_addr({{:array, name, {:number, i}}, {_type, size, mem_addr}}, {variables, read_only, address, errors, line_number} = state, line) do
+    if (i < size) do
+      i = i+mem_addr
+      assembly = parse_number(i)
+      {"#{assembly}STORE 0\n", {variables, read_only, address, errors, line_number}}
+    else
+      {"", {variables, read_only, address, [{:out_of_array_range, {name}, line} | errors], line_number}}
+    end
+  end
 
+  defp calc_arr_mem_addr({{:array, name, {:var, _var_name} = var}, {_type, size, mem_addr}}, {variables, read_only, address, errors, line_number} = state, line) do
+    assembly = parse_number(mem_addr)
+    {mem_addr, state} = get_mem_addr(var, state, line)
+    {"#{assembly}ADD #{mem_addr}\nSTORE 0\n",state}
+  end
+
+  defp get_mem_addr({:var, name}, {variables, read_only, address, errors, line_number} = state, line) do
+    cond do
+      Map.has_key?(read_only, name) or Map.has_key?(variables, name) ->
+        {type, _size, mem_addr} = Map.get_lazy(read_only, name, fn -> Map.get(variables, name) end)
+        if (type == :var) do
+          {mem_addr, {variables, read_only, address, errors, line_number+1}}
+        else
+          {"", {variables, read_only, address, [{:accessing_array_as_var, {name}, line} | errors], line_number}}
+        end
+      true ->
+        {"", {variables, read_only, address, [{:var_not_found, {name}, line} | errors], line_number}}
+    end
   end
 
   defp parse_number(n) do

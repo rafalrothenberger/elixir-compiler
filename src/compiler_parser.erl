@@ -503,7 +503,7 @@ yeccpars2_13_(__Stack0) ->
 yeccpars2_14_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
-   { var , extract_value ( __1 ) }
+   { var , extract_value ( __1 ) , { } }
   end | __Stack].
 
 -compile({inline,yeccpars2_18_/1}).
@@ -511,7 +511,7 @@ yeccpars2_14_(__Stack0) ->
 yeccpars2_18_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
-   { array , extract_value ( __1 ) , number , list_to_integer ( extract_value ( __3 ) ) }
+   { array , extract_value ( __1 ) , { number , list_to_integer ( extract_value ( __3 ) ) } }
   end | __Stack].
 
 -compile({inline,yeccpars2_19_/1}).
@@ -519,7 +519,7 @@ yeccpars2_18_(__Stack0) ->
 yeccpars2_19_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
-   { array , extract_value ( __1 ) , var , extract_value ( __3 ) }
+   { array , extract_value ( __1 ) , { var , extract_value ( __3 ) } }
   end | __Stack].
 
 -compile({inline,yeccpars2_20_/1}).
@@ -543,7 +543,7 @@ yeccpars2_21_(__Stack0) ->
 yeccpars2_26_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
-   { number , list_to_integer ( extract_value ( __1 ) ) }
+   { number , { list_to_integer ( extract_value ( __1 ) ) } }
   end | __Stack].
 
 -compile({inline,yeccpars2_27_/1}).
