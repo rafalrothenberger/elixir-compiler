@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cf440e8c-5eb7-4c2b-9c45-3f0e3bce5fc3" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/lib/compiler/code.ex" afterPath="$PROJECT_DIR$/lib/compiler/code.ex" />
-      <change beforePath="$PROJECT_DIR$/src/compiler_parser.erl" afterPath="$PROJECT_DIR$/src/compiler_parser.erl" />
-      <change beforePath="$PROJECT_DIR$/src/compiler_parser.yrl" afterPath="$PROJECT_DIR$/src/compiler_parser.yrl" />
-      <change beforePath="$PROJECT_DIR$/test.imp" afterPath="$PROJECT_DIR$/test.imp" />
-      <change beforePath="$PROJECT_DIR$/test.imp.out" afterPath="$PROJECT_DIR$/test.imp.out" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -71,19 +66,14 @@
       <file leaf-file-name="code.ex" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/compiler/code.ex">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="628">
-              <caret line="220" column="4" lean-forward="true" selection-start-line="220" selection-start-column="4" selection-end-line="220" selection-end-column="4" />
+            <state relative-caret-position="447">
+              <caret line="70" column="0" lean-forward="false" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
               <folding>
-                <element signature="e#1000#1747#0" expanded="false" />
-                <element signature="e#3157#4470#0" expanded="false" />
-                <element signature="e#5554#6126#0" expanded="false" />
-                <element signature="e#6236#7090#0" expanded="false" />
-                <element signature="e#7211#7337#0" expanded="false" />
-                <element signature="e#7458#8118#0" expanded="false" />
-                <element signature="e#8239#8364#0" expanded="false" />
-                <element signature="e#8486#9645#0" expanded="false" />
-                <element signature="e#10990#11253#0" expanded="false" />
-                <element signature="e#11270#11314#0" expanded="false" />
+                <element signature="e#3687#4347#0" expanded="false" />
+                <element signature="e#4468#4593#0" expanded="false" />
+                <element signature="e#4715#5874#0" expanded="false" />
+                <element signature="e#7984#8247#0" expanded="false" />
+                <element signature="e#8264#8308#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -320,12 +310,12 @@
       <workItem from="1514052091357" duration="5511000" />
       <workItem from="1514058906316" duration="7969000" />
       <workItem from="1514075938089" duration="1829000" />
-      <workItem from="1514113954738" duration="34426000" />
+      <workItem from="1514113954738" duration="38702000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="49735000" />
+    <option name="totallyTimeSpent" value="54011000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="22" width="1920" height="1178" extended-state="6" />
@@ -460,14 +450,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config/config.exs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="6" lean-forward="false" selection-start-line="16" selection-start-column="6" selection-end-line="16" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/compiler/declarations.ex">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
@@ -508,21 +490,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/config/config.exs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" column="6" lean-forward="false" selection-start-line="16" selection-start-column="6" selection-end-line="16" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/lib/compiler/code.ex">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="628">
-          <caret line="220" column="4" lean-forward="true" selection-start-line="220" selection-start-column="4" selection-end-line="220" selection-end-column="4" />
+        <state relative-caret-position="447">
+          <caret line="70" column="0" lean-forward="false" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
           <folding>
-            <element signature="e#1000#1747#0" expanded="false" />
-            <element signature="e#3157#4470#0" expanded="false" />
-            <element signature="e#5554#6126#0" expanded="false" />
-            <element signature="e#6236#7090#0" expanded="false" />
-            <element signature="e#7211#7337#0" expanded="false" />
-            <element signature="e#7458#8118#0" expanded="false" />
-            <element signature="e#8239#8364#0" expanded="false" />
-            <element signature="e#8486#9645#0" expanded="false" />
-            <element signature="e#10990#11253#0" expanded="false" />
-            <element signature="e#11270#11314#0" expanded="false" />
+            <element signature="e#3687#4347#0" expanded="false" />
+            <element signature="e#4468#4593#0" expanded="false" />
+            <element signature="e#4715#5874#0" expanded="false" />
+            <element signature="e#7984#8247#0" expanded="false" />
+            <element signature="e#8264#8308#0" expanded="false" />
           </folding>
         </state>
       </provider>

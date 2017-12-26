@@ -9,12 +9,12 @@ defmodule Compiler.Code do
   end
 
   def gen_assembly([cmd], {variables, read_only, address, errors, line_number} = state, assembly) do
-    {code, {variables, read_only, address, errors, line_number}} = parse_cmd(cmd, state)
+    {code, {variables, read_only, address, errors, _line_number}} = parse_cmd(cmd, state)
     gen_assembly([], {variables, read_only, address, errors, line_number + lines(code)}, "#{assembly}#{code}")
   end
 
   def gen_assembly([cmd|cmds], {variables, read_only, address, errors, line_number} = state, assembly) do
-    {code, {variables, read_only, address, errors, line_number}} = parse_cmd(cmd, state)
+    {code, {variables, read_only, address, errors, _line_number}} = parse_cmd(cmd, state)
     gen_assembly(cmds, {variables, read_only, address, errors, line_number + lines(code)}, "#{assembly}#{code}")
   end
 
@@ -45,56 +45,27 @@ defmodule Compiler.Code do
 
   defp assign({{:array, _name, {:number, _i}}, {_type, _size, _mem_addr}} = var, expression_code, {variables, read_only, address, errors, line_number} = state, line) do
     {assembly, state} = calc_arr_mem_addr(var, state, line)
-    {"#{assembly}#{expression_code}STOREI 0\n",state}
+    {"#{assembly}STORE 0\n#{expression_code}STOREI 0\n",state}
   end
 
-  defp assign({{:array, _name, {:var, _i}}, {_type, _size, _mem_addr}} = var, expression_code, {variables, read_only, address, errors, line_number} = state, line) do
+  defp assign({{:array, _name, {:var, _v}}, {_type, _size, _mem_addr}} = var, expression_code, {variables, read_only, address, errors, line_number} = state, line) do
     {assembly, state} = calc_arr_mem_addr(var, state, line)
-    {"#{assembly}#{expression_code}STOREI 0\n",state}
+    {"#{assembly}STORE 0\n#{expression_code}STOREI 0\n",state}
   end
 
   def parse_expression({:number, {n}}, {variables, read_only, address, errors, line_number}, line) do
     assembly = parse_number(n)
-    l = lines(assembly)
-    {assembly, {variables, read_only, address, errors, line_number+l}}
+    {assembly, {variables, read_only, address, errors, line_number}}
   end
 
-  def parse_expression({:var, name}, {variables, read_only, address, errors, line_number}, line) do
-    cond do
-      Map.has_key?(read_only, name) or Map.has_key?(variables, name) ->
-        {type, _size, mem_addr} = Map.get_lazy(read_only, name, fn -> Map.get(variables, name) end)
-        if (type == :var) do
-          {"LOAD #{mem_addr}\n", {variables, read_only, address, errors, line_number+1}}
-        else
-          {"", {variables, read_only, address, [{:accessing_array_as_var, {name}, line} | errors], line_number}}
-        end
-      true ->
-        {"", {variables, read_only, address, [{:var_not_found, {name}, line} | errors], line_number}}
-    end
+  def parse_expression({:var, _name, {}} = var, {_variables, _read_only, _address, _errors, _line_number} = state, line) do
+    {mem_addr, state} = get_mem_addr(var, state, line)
+    {"LOAD #{mem_addr}\n", state}
   end
 
-  def parse_expression({:array, v, :number, i}, {variables, read_only, address, errors, line_number}, line) do
-    cond do
-      Map.has_key?(read_only, v) or Map.has_key?(variables, v) ->
-        {type, size, mem_addr} = Map.get_lazy(read_only, v, fn -> Map.get(variables, v) end)
-        if (type == :array) do
-          if (i < size) do
-            i = mem_addr+i
-            a = parse_number(i)
-            a = "#{a}STORE 0\n"
-            line_number = line_number+lines(a)+1
-            {"LOADI 0\n", {variables, read_only, address, errors, line_number+1}}
-          else
-            {"", {variables, read_only, address, [{:out_of_array_range, {v}, line} | errors], line_number}}
-          end
-
-        else
-          {"", {variables, read_only, address, [{:accessing_var_as_array, {v}, line} | errors], line_number}}
-        end
-
-      true ->
-        {"", {variables, read_only, address, [{:var_not_found, {v}, line} | errors], line_number}}
-    end
+  def parse_expression({:array, _name, _ops} = var, {variables, read_only, address, errors, line_number} = state, line) do
+    {assembly, state} = get_arr_mem_addr(var, state, line)
+    {"#{assembly}\nSTORE 1\nLOADI 1\n", state}
   end
 
   def parse_expression({:add, {:number, a}, {:number, b}}, {variables, read_only, address, errors, line_number}, line) do
@@ -153,24 +124,39 @@ defmodule Compiler.Code do
     if (i < size) do
       i = i+mem_addr
       assembly = parse_number(i)
-      {"#{assembly}STORE 0\n", {variables, read_only, address, errors, line_number}}
+      {"#{assembly}", {variables, read_only, address, errors, line_number}}
     else
       {"", {variables, read_only, address, [{:out_of_array_range, {name}, line} | errors], line_number}}
     end
   end
 
-  defp calc_arr_mem_addr({{:array, name, {:var, _var_name} = var}, {_type, size, mem_addr}}, {variables, read_only, address, errors, line_number} = state, line) do
+  defp calc_arr_mem_addr({{:array, name, {:var, var_name}}, {_type, size, mem_addr}}, {variables, read_only, address, errors, line_number} = state, line) do
     assembly = parse_number(mem_addr)
-    {mem_addr, state} = get_mem_addr(var, state, line)
-    {"#{assembly}ADD #{mem_addr}\nSTORE 0\n",state}
+    {mem_addr, state} = get_mem_addr({:var, var_name, {}}, state, line)
+    {"#{assembly}ADD #{mem_addr}\n",state}
   end
 
-  defp get_mem_addr({:var, name}, {variables, read_only, address, errors, line_number} = state, line) do
+  defp get_arr_mem_addr({:array, name, _ops} = var, {variables, read_only, address, errors, line_number} = state, line) do
+    cond do
+      Map.has_key?(read_only, name) or Map.has_key?(variables, name) ->
+        arr = Map.get_lazy(read_only, name, fn -> Map.get(variables, name) end)
+        {type, _size, _mem_addr} = arr
+        if (type == :array) do
+          calc_arr_mem_addr({var, arr}, state, line)
+        else
+          {"", {variables, read_only, address, [{:accessing_array_as_var, {name}, line} | errors], line_number}}
+        end
+      true ->
+        {"", {variables, read_only, address, [{:var_not_found, {name}, line} | errors], line_number}}
+    end
+  end
+
+  defp get_mem_addr({:var, name, {}}, {variables, read_only, address, errors, line_number} = state, line) do
     cond do
       Map.has_key?(read_only, name) or Map.has_key?(variables, name) ->
         {type, _size, mem_addr} = Map.get_lazy(read_only, name, fn -> Map.get(variables, name) end)
         if (type == :var) do
-          {mem_addr, {variables, read_only, address, errors, line_number+1}}
+          {mem_addr, {variables, read_only, address, errors, line_number}}
         else
           {"", {variables, read_only, address, [{:accessing_array_as_var, {name}, line} | errors], line_number}}
         end
