@@ -2,9 +2,21 @@
 VAR
      a b       c[123] d
 BEGIN
-a := 1;
-c[1] := 1;
-c[a] := 1;
+(a := 1;
+c[1] := 12;
+c[a] := 122;
+WRITE a;
 a := a;
 a := c[a];
+WRITE a;
+WRITE c[a];
+WRITE 1;
+READ a;
+WRITE a;
+b := a - 12;
+WRITE b;)
+a := 5;
+c[a] := 19;
+b := c[a] / a;
+WRITE b;
 END
