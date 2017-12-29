@@ -4,8 +4,8 @@ defmodule Compiler.Code do
 
   def gen_assembly([], {variables, read_only, address, errors} = state, assembly) do
     case errors do
-      [] -> {:ok, assembly}
-      _ -> {:error, Enum.reverse(errors)}
+      [] -> {:ok, assembly, errors}
+      _ -> {:error, "", errors}
     end
   end
 
@@ -82,6 +82,76 @@ defmodule Compiler.Code do
       true ->
         {"", {variables, read_only, address, [{:var_not_found, {name}, line} | errors]}}
     end
+  end
+
+  defp parse_cmd({line, :ifonly, {condition, cmds}}, {variables, read_only, address, errors} = state) do
+    parse_condition({condition, cmds}, state, line)
+  end
+
+  defp parse_condition({{:equals, {:number, {a}}, {:number, {b}}}, cmds}, {variables, read_only, address, errors} = state, line) do
+    if (a == b) do
+      {_, assembly, errors} = gen_assembly(cmds, state, "")
+      {assembly, {variables, read_only, address, errors}}
+    else
+      {"", {variables, read_only, address, errors}}
+    end
+  end
+
+  defp parse_condition({{:equals, {:number, {n}}, {:var, name, {}} = var}, cmds}, {variables, read_only, address, errors} = state, line) do
+    parse_condition({{:equals, var, {:number, {n}}}, cmds}, state, line)
+  end
+
+  defp parse_condition({{:equals, {:var, name, {}} = var, value}, cmds}, {variables, read_only, address, errors} = state, line) do
+    {value_code, state} = parse_expression(value, state, line)
+    {mem_addr, state} = get_mem_addr(var, state, line)
+    skip = Labels.get_label()
+    start = Labels.get_label()
+    code = "#{value_code}INC\nSUB #{mem_addr}\nJZERO #{skip}\nDEC\nJZERO #{start}\nJUMP #{skip}\n!#{start}!"
+    {_, assembly, errors} = gen_assembly(cmds, state, "")
+    {"#{code}#{assembly}!#{skip}!", {variables, read_only, address, errors}}
+  end
+
+  defp parse_condition({{:equals, {:array, name, _ops} = var, value}, cmds}, {variables, read_only, address, errors} = state, line) do
+    {value_code, state} = parse_expression(value, state, line)
+    {array_code, state} = get_arr_mem_addr(var, state, line)
+    skip = Labels.get_label()
+    start = Labels.get_label()
+    code = "#{array_code}STORE 1\n#{value_code}INC\nSUBI 1\nJZERO #{skip}\nDEC\nJZERO #{start}\nJUMP #{skip}\n!#{start}!"
+    {_, assembly, errors} = gen_assembly(cmds, state, "")
+    {"#{code}#{assembly}!#{skip}!", {variables, read_only, address, errors}}
+  end
+
+  defp parse_condition({{:ne, {:number, {a}}, {:number, {b}}}, cmds}, {variables, read_only, address, errors} = state, line) do
+    if (a != b) do
+      {_, assembly, errors} = gen_assembly(cmds, state, "")
+      {assembly, {variables, read_only, address, errors}}
+    else
+      {"", {variables, read_only, address, errors}}
+    end
+  end
+
+  defp parse_condition({{:ne, {:number, {n}}, {:var, name, {}} = var}, cmds}, {variables, read_only, address, errors} = state, line) do
+    parse_condition({{:ne, var, {:number, {n}}}, cmds}, state, line)
+  end
+
+  defp parse_condition({{:ne, {:var, name, {}} = var, value}, cmds}, {variables, read_only, address, errors} = state, line) do
+    {value_code, state} = parse_expression(value, state, line)
+    {mem_addr, state} = get_mem_addr(var, state, line)
+    skip = Labels.get_label()
+    start = Labels.get_label()
+    code = "#{value_code}INC\nSUB #{mem_addr}\nJZERO #{start}\nDEC\nJZERO #{skip}\n!#{start}!"
+    {_, assembly, errors} = gen_assembly(cmds, state, "")
+    {"#{code}#{assembly}!#{skip}!", {variables, read_only, address, errors}}
+  end
+
+  defp parse_condition({{:ne, {:array, name, _ops} = var, value}, cmds}, {variables, read_only, address, errors} = state, line) do
+    {value_code, state} = parse_expression(value, state, line)
+    {array_code, state} = get_arr_mem_addr(var, state, line)
+    skip = Labels.get_label()
+    start = Labels.get_label()
+    code = "#{array_code}STORE 1\n#{value_code}INC\nSUBI 1\nJZERO #{start}\nDEC\nJZERO #{skip}\n!#{start}!"
+    {_, assembly, errors} = gen_assembly(cmds, state, "")
+    {"#{code}#{assembly}!#{skip}!", {variables, read_only, address, errors}}
   end
 
   defp put({{:var, _name, {}}, {_type, _size, mem_addr}}, state, _line) do
@@ -184,7 +254,7 @@ defmodule Compiler.Code do
 
   def parse_expression({:multiply, {:number, {n}}, {:var, name, {}} = var}, {variables, read_only, address, errors} = state, line) do
     {mem_addr, {variables, read_only, address, errors}} = get_mem_addr(var, state, line)
-    assembly = parse_number(n, "ADD #{mem_addr}")
+    assembly = parse_number(n, "ADD #{mem_addr}\n")
     {assembly, {variables, read_only, address, errors}}
   end
 
@@ -216,7 +286,7 @@ defmodule Compiler.Code do
       true ->
         {expression_code, state} = parse_expression(expression, state, line)
         number = parse_number(n)
-        assembly = "#{number}STORE 8\nZERO\nSTORE 7\n#{expression_code}INC\n"
+        assembly = "ZERO\nSTORE 7\n#{number}STORE 8\n#{expression_code}INC\n"
         start = Labels.get_label()
         out = Labels.get_label()
         assembly = "#{assembly}STORE 9\n!#{start}!LOAD 9\nSUB 8\nJZERO #{out}\nSTORE 9\nLOAD 7\nINC\nSTORE 7\nJUMP #{start}\n!#{out}!LOAD 7\n"
@@ -229,8 +299,46 @@ defmodule Compiler.Code do
     {divider_code, state} = parse_expression(divider, state, line)
     start = Labels.get_label()
     out = Labels.get_label()
-    assembly = "#{divider_code}JZERO #{out}\nSTORE 8\nZERO\nSTORE 7\n#{dividend_code}INC\nSTORE 9\n"
+    assembly = "ZERO\nSTORE 7\n#{divider_code}JZERO #{out}\nSTORE 8\n#{dividend_code}INC\nSTORE 9\n"
     assembly = "#{assembly}!#{start}!LOAD 9\nSUB 8\nJZERO #{out}\nSTORE 9\nLOAD 7\nINC\nSTORE 7\nJUMP #{start}\n!#{out}!LOAD 7\n"
+    {assembly, state}
+  end
+
+  def parse_expression({:mod, {:number, {a}}, {:number, {b}}}, {variables, read_only, address, errors} = state, line) do
+    if (b <= 1) do
+      {"ZERO\n", state}
+    else
+      assembly = parse_number(rem(a,b))
+      {assembly, state}
+    end
+  end
+
+  def parse_expression({:mod, expression, {:number, {n}}}, {variables, read_only, address, errors} = state, line) do
+    #    parse_expression({:divide, {:number, {n}}, expression}, {variables, read_only, address, errors}, line)
+    cond do
+      n <= 1 -> {"ZERO\n", state}
+      true ->
+        {expression_code, state} = parse_expression(expression, state, line)
+        number = parse_number(n)
+        assembly = "#{number}STORE 8\n#{expression_code}"
+        start = Labels.get_label()
+        out = Labels.get_label()
+        final = Labels.get_label()
+        final_out = Labels.get_label()
+        assembly = "#{assembly}!#{start}!STORE 9\nSUB 8\nJZERO #{out}\nJUMP #{start}\n!#{out}!LOAD 9\nINC\nSUB 8\nJZERO #{final}\nDEC\nSTORE 9\n!#{final}!LOAD 9\n"
+        {assembly, state}
+    end
+  end
+
+  def parse_expression({:mod, dividend, divider}, {variables, read_only, address, errors} = state, line) do
+    {dividend_code, state} = parse_expression(dividend, state, line)
+    {divider_code, state} = parse_expression(divider, state, line)
+    start = Labels.get_label()
+    out = Labels.get_label()
+    final = Labels.get_label()
+    final_out = Labels.get_label()
+    assembly = "ZERO\nSTORE 9\n#{divider_code}JZERO #{final}\nSTORE 8\n#{dividend_code}"
+    assembly = "#{assembly}!#{start}!STORE 9\nSUB 8\nJZERO #{out}\nJUMP #{start}\n!#{out}!LOAD 9\nINC\nSUB 8\nJZERO #{final}\nDEC\nSTORE 9\n!#{final}!LOAD 9\n"
     {assembly, state}
   end
 
@@ -279,7 +387,7 @@ defmodule Compiler.Code do
     end
   end
 
-  defp parse_number(n) do
+  defp parse_number_test(n) do
     bits = Integer.to_charlist(n,2)
     code = Enum.map(bits, fn bit ->
       case bit do
@@ -292,22 +400,35 @@ defmodule Compiler.Code do
     "ZERO\n#{code}"
   end
 
-  defp parse_number(n) do
-    bits = Integer.to_string(n, 2)
-
+  def parse_number(n) do
+    parse_number(n, "INC\n")
+#    bits = Integer.to_string(n, 2)
+#    bits = String.split(bits, "0", trim: false)
+#    code = Enum.map(bits, fn b ->
+#      if (String.length(b) > 3)do
+#        "INC\n" <> String.duplicate("SHL\n", String.length(b)) <> "DEC\n"
+#      else
+#        if (String.length(b) > 0) do
+#          String.duplicate("SHL\nINC\n", max(String.length(b), 0))
+#        end
+#      end
+#    end) |> Enum.join("SHL\n") |> String.trim_leading("SHL\n")
+#    "ZERO\n" <> code
   end
 
   defp parse_number(n, assembly) do
-    bits = Integer.to_charlist(n,2)
-    code = Enum.map(bits, fn bit ->
-      case bit do
-        49 -> "SHL\n#{assembly}\n"
-        48 -> "SHL\n"
+    bits = Integer.to_string(n, 2)
+    bits = String.split(bits, "0", trim: false)
+    code = Enum.map(bits, fn b ->
+      if (String.length(b) > 3)do
+        "#{assembly}" <> String.duplicate("SHL\n", String.length(b)) <> "DEC\n"
+      else
+        if (String.length(b) > 0) do
+          String.duplicate("SHL\n#{assembly}", max(String.length(b), 0))
+        end
       end
-    end)
-    code = Enum.join(code, "")
-    code = String.trim_leading(code, "SHL\n")
-    "ZERO\n#{code}"
+    end) |> Enum.join("SHL\n") |> String.trim_leading("SHL\n")
+    "ZERO\n" <> code
   end
 
   def lines(s) do

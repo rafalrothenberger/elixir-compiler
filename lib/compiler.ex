@@ -21,7 +21,7 @@ defmodule Compiler do
     IO.puts("\n\n\n")
     res = parse(res)
     case res do
-      {:ok, assembly} ->
+      {:ok, assembly, _} ->
         IO.inspect(assembly)
         {:ok, labels, _} = :label_lexer.string(String.to_charlist(assembly))
 
@@ -32,7 +32,7 @@ defmodule Compiler do
         IO.write(file, assembly)
         IO.write(file, "HALT\n")
         File.close(file)
-      {:error, errors} ->
+      {:error, _, errors} ->
         IO.inspect(errors)
     end
   end
@@ -58,6 +58,7 @@ defmodule Compiler do
     {variables, address, errors} = a
     Compiler.Code.gen_assembly(code, {variables, %{}, address, errors}, "")
   end
+
 
 
 
