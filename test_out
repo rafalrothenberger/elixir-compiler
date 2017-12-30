@@ -1,9 +1,6 @@
 Czytanie pliku test.imp.out
-Skończono czytanie pliku (28 linii).
+Skończono czytanie pliku (76 linii).
 Uruchamianie programu.
-> 1
-> 2
-> 3
 > 4
 > 5
 > 6
@@ -11,4 +8,7 @@ Uruchamianie programu.
 > 8
 > 9
 > 10
-Skończono program (czas: 1622).
+> 11
+> 12
+> 13
+Skończono program (czas: 1985).

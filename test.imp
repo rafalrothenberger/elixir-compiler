@@ -1,36 +1,39 @@
 VAR
     a b c[12]
 BEGIN
-(FOR i FROM 1 TO 2 DO
-FOR i FROM 1 TO 2 DO
-FOR i FROM 1 TO 2 DO
-FOR i FROM 1 TO 2 DO
-FOR i FROM 1 TO 2 DO
-FOR i FROM 1 TO 2 DO
-FOR i FROM 1 TO 2 DO
-FOR i FROM 1 TO 2 DO
-FOR i FROM 1 TO 2 DO
-FOR i FROM 1 TO 2 DO
-FOR i FROM 1 TO 2 DO
-FOR i FROM 1 TO 2 DO
-FOR i FROM 1 TO 2 DO
-WRITE i;
-ENDFOR
-ENDFOR
-ENDFOR
-ENDFOR
-ENDFOR
-ENDFOR
-ENDFOR
-ENDFOR
-ENDFOR
-ENDFOR
-ENDFOR
-ENDFOR
-ENDFOR)
+    (FOR i FROM 1 TO 2 DO
+    FOR i FROM 1 TO 2 DO
+    FOR i FROM 1 TO 2 DO
+    FOR i FROM 1 TO 2 DO
+    FOR i FROM 1 TO 2 DO
+    FOR i FROM 1 TO 2 DO
+    FOR i FROM 1 TO 2 DO
+    FOR i FROM 1 TO 2 DO
+    FOR i FROM 1 TO 2 DO
+    FOR i FROM 1 TO 2 DO
+    FOR i FROM 1 TO 2 DO
+    FOR i FROM 1 TO 2 DO
+    FOR i FROM 1 TO 2 DO
+    WRITE i;
+    ENDFOR
+    ENDFOR
+    ENDFOR
+    ENDFOR
+    ENDFOR
+    ENDFOR
+    ENDFOR
+    ENDFOR
+    ENDFOR
+    ENDFOR
+    ENDFOR
+    ENDFOR
+    ENDFOR)
     a := 1;
     b := 10;
-    FOR i FROM 1 TO b DO
-        WRITE i;
+    c[1] := 1;
+    c[10] := 10;
+    FOR i FROM c[a] TO c[b] DO
+        b := i+3;
+        WRITE b;
     ENDFOR
 END
