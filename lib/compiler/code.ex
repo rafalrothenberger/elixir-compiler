@@ -439,31 +439,45 @@ defmodule Compiler.Code do
     {"#{array_code}STORE 2\n#{expression_code}SUBI 2\n", {variables, read_only, address, errors}}
   end
 
-  def parse_expression({:multiply, {:number, {a}}, {:number, {b}}}, {variables, read_only, address, errors} = state, line) do
-    assembly = parse_number(a*b)
-    {assembly, {variables, read_only, address, errors}}
-  end
+    def parse_expression({:multiply, {:number, {a}}, {:number, {b}}}, {variables, read_only, address, errors} = state, line) do
+      assembly = parse_number(a*b)
+      {assembly, {variables, read_only, address, errors}}
+    end
 
-  def parse_expression({:multiply, expression, {:number, {n}}}, {variables, read_only, address, errors} = state, line) do
-    parse_expression({:multiply, {:number, {n}}, expression}, {variables, read_only, address, errors}, line)
-  end
+    def parse_expression({:multiply, expression, {:number, {n}}}, {variables, read_only, address, errors} = state, line) do
+      parse_expression({:multiply, {:number, {n}}, expression}, {variables, read_only, address, errors}, line)
+    end
 
-  def parse_expression({:multiply, {:number, {n}}, {:var, name, {}} = var}, {variables, read_only, address, errors} = state, line) do
-    {mem_addr, {variables, read_only, address, errors}} = get_mem_addr(var, state, line)
-    assembly = parse_number(n, "ADD #{mem_addr}\n")
-    {assembly, {variables, read_only, address, errors}}
-  end
+    def parse_expression({:multiply, {:number, {n}}, {:var, name, {}} = var}, {variables, read_only, address, errors} = state, line) do
+      {mem_addr, {variables, read_only, address, errors}} = get_mem_addr(var, state, line)
+      assembly = parse_number(n, "ADD #{mem_addr}\n")
+      {assembly, {variables, read_only, address, errors}}
+    end
 
-  def parse_expression({:multiply, expression, {:var, name, {}} = var}, {variables, read_only, address, errors} = state, line) do
-    {mem_addr, state} = get_mem_addr(var, state, line)
-    {expression_code, {variables, read_only, address, errors}} = parse_expression(expression, state, line)
-    assembly = "ZERO\nSTORE 8\n#{expression_code}STORE 9\n"
+  def parse_expression({:multiply, left, right}, {variables, read_only, address, errors} = state, line) do
+    {left_code, state} = parse_expression(left, state, line)
+    {right_code, state} = parse_expression(right, state, line)
+    store_code = "ZERO\nSTORE 9\n#{left_code}STORE 8\n#{right_code}STORE 7\n"
+
+    skip = Labels.get_label()
+    add_skip = Labels.get_label()
     start = Labels.get_label()
-    out = Labels.get_label()
-    s = "!#{start}!DEC\nSTORE 9\nLOAD 8\nADD #{mem_addr}\nSTORE 8\nLOAD 9\nJZERO #{out}\nJUMP #{start}\n!#{out}!LOAD 8\n"
-    assembly = "#{assembly}JZERO #{out}\n#{s}"
-    {assembly, {variables, read_only, address, errors}}
+
+    assembly = "#{store_code}!#{start}!JZERO #{skip}\nSHR\nSHL\nSTORE 6\nLOAD 7\nSUB 6\nJZERO #{add_skip}\nLOAD 9\nADD 8\nSTORE 9\n!#{add_skip}!LOAD 8\nSHL\nSTORE 8\nLOAD 7\nSHR\nSTORE 7\nJUMP #{start}\n!#{skip}!LOAD 9\n"
+
+    {assembly, state}
   end
+#
+#  def parse_expression({:multiply, expression, {:var, name, {}} = var}, {variables, read_only, address, errors} = state, line) do
+#    {mem_addr, state} = get_mem_addr(var, state, line)
+#    {expression_code, {variables, read_only, address, errors}} = parse_expression(expression, state, line)
+#    assembly = "ZERO\nSTORE 8\n#{expression_code}STORE 9\n"
+#    start = Labels.get_label()
+#    out = Labels.get_label()
+#    s = "!#{start}!DEC\nSTORE 9\nLOAD 8\nADD #{mem_addr}\nSTORE 8\nLOAD 9\nJZERO #{out}\nJUMP #{start}\n!#{out}!LOAD 8\n"
+#    assembly = "#{assembly}JZERO #{out}\n#{s}"
+#    {assembly, {variables, read_only, address, errors}}
+#  end
 
   def parse_expression({:divide, {:number, {a}}, {:number, {b}}}, {variables, read_only, address, errors} = state, line) do
     if (b == 0) do
