@@ -284,6 +284,52 @@ defmodule Compiler.Code do
     #    {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
   end
 
+  # left < right
+  defp parse_condition({{:l, left, right}, if_cmds, else_cmds}, {variables, read_only, address, errors} = state, line) do
+    {left_code, state} = parse_expression(left, state, line)
+    {right_code, state} = parse_expression(right, state, line)
+
+    go_else = Labels.get_label()
+    start = Labels.get_label()
+    skip = Labels.get_label()
+
+    code = "#{right_code}STORE 9\n#{left_code}INC\nSUB 9\nJZERO #{start}\nJUMP #{go_else}\n!#{start}!"
+    {_, assembly, errors} = gen_assembly(if_cmds, state, "")
+    case else_cmds do
+      [] -> {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
+      _ ->
+        {_, else_assembly, errors} = gen_assembly(else_cmds, state, "")
+        {"#{code}#{assembly}JUMP #{skip}\n!#{go_else}!#{else_assembly}!#{skip}!", {variables, read_only, address, errors}}
+    end
+  end
+
+  # left <= right
+  defp parse_condition({{:le, left, right}, if_cmds, else_cmds}, {variables, read_only, address, errors} = state, line) do
+    {left_code, state} = parse_expression(left, state, line)
+    {right_code, state} = parse_expression(right, state, line)
+
+    go_else = Labels.get_label()
+    start = Labels.get_label()
+    skip = Labels.get_label()
+
+    code = "#{right_code}STORE 9\n#{left_code}SUB 9\nJZERO #{start}\nJUMP #{go_else}\n!#{start}!"
+    {_, assembly, errors} = gen_assembly(if_cmds, state, "")
+    case else_cmds do
+      [] -> {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
+      _ ->
+        {_, else_assembly, errors} = gen_assembly(else_cmds, state, "")
+        {"#{code}#{assembly}JUMP #{skip}\n!#{go_else}!#{else_assembly}!#{skip}!", {variables, read_only, address, errors}}
+    end
+  end
+
+  defp parse_condition({{:g, left, right}, if_cmds, else_cmds}, {variables, read_only, address, errors} = state, line) do
+    parse_condition({{:l, right, left}, if_cmds, else_cmds}, {variables, read_only, address, errors} = state, line)
+  end
+
+  defp parse_condition({{:ge, left, right}, if_cmds, else_cmds}, {variables, read_only, address, errors} = state, line) do
+    parse_condition({{:le, right, left}, if_cmds, else_cmds}, {variables, read_only, address, errors} = state, line)
+  end
+
   defp put({{:var, _name, {}}, {_type, _size, mem_addr}}, state, _line) do
     {"LOAD #{mem_addr}\nPUT\n", state}
   end

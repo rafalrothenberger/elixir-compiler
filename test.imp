@@ -28,12 +28,20 @@ BEGIN
     ENDFOR
     ENDFOR
     ENDFOR)
-    a := 1;
+    (a := 1;
     b := 10;
     c[1] := 1;
     c[10] := 10;
     FOR i FROM c[a] TO c[b] DO
         b := i+3;
         WRITE b;
-    ENDFOR
+    ENDFOR)
+    a := 0;
+    b := 1;
+    WHILE a <= b DO
+        WRITE a;
+        WRITE b;
+        READ a;
+        READ b;
+    ENDWHILE
 END
