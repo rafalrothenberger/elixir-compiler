@@ -1149,7 +1149,7 @@ yeccpars2_54_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_63_/1}).
--file("src/compiler_parser.yrl", 21).
+-file("src/compiler_parser.yrl", 22).
 yeccpars2_63_(__Stack0) ->
  [__9,__8,__7,__6,__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1157,7 +1157,7 @@ yeccpars2_63_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_67_/1}).
--file("src/compiler_parser.yrl", 22).
+-file("src/compiler_parser.yrl", 21).
 yeccpars2_67_(__Stack0) ->
  [__9,__8,__7,__6,__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin

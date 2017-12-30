@@ -23,7 +23,7 @@ WHILE                                       : {token, {'WHILE', TokenLine}}.
 DO                                          : {token, {'DO', TokenLine}}.
 ENDWHILE                                    : {token, {'ENDWHILE', TokenLine}}.
 TO                                          : {token, {'TO', TokenLine}}.
-DOWN                                        : {token, {'DOWNTO', TokenLine}}.
+DOWNTO                                      : {token, {'DOWNTO', TokenLine}}.
 FOR                                         : {token, {'FOR', TokenLine}}.
 FROM                                        : {token, {'FROM', TokenLine}}.
 ENDFOR                                      : {token, {'ENDFOR', TokenLine}}.

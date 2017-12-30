@@ -1,47 +1,36 @@
+( sito Eratostenesa )
+(
 VAR
-    a b c[12]
+    a b
 BEGIN
-    (FOR i FROM 1 TO 2 DO
-    FOR i FROM 1 TO 2 DO
-    FOR i FROM 1 TO 2 DO
-    FOR i FROM 1 TO 2 DO
-    FOR i FROM 1 TO 2 DO
-    FOR i FROM 1 TO 2 DO
-    FOR i FROM 1 TO 2 DO
-    FOR i FROM 1 TO 2 DO
-    FOR i FROM 1 TO 2 DO
-    FOR i FROM 1 TO 2 DO
-    FOR i FROM 1 TO 2 DO
-    FOR i FROM 1 TO 2 DO
-    FOR i FROM 1 TO 2 DO
-    WRITE i;
-    ENDFOR
-    ENDFOR
-    ENDFOR
-    ENDFOR
-    ENDFOR
-    ENDFOR
-    ENDFOR
-    ENDFOR
-    ENDFOR
-    ENDFOR
-    ENDFOR
-    ENDFOR
-    ENDFOR)
-    (a := 1;
-    b := 10;
-    c[1] := 1;
-    c[10] := 10;
-    FOR i FROM c[a] TO c[b] DO
-        b := i+3;
-        WRITE b;
-    ENDFOR)
-    a := 0;
-    b := 1;
-    WHILE a <= b DO
-        WRITE a;
-        WRITE b;
-        READ a;
-        READ b;
+    READ a;
+    WHILE a > 0 DO
+        b := a / 2;
+        b := 2 * b;
+        IF a > b THEN WRITE 1;
+        ELSE WRITE 0;
+        ENDIF
+        a := a /2;
     ENDWHILE
+END
+)
+
+( sito Eratostenesa )
+VAR
+n j sito [100]
+BEGIN
+n := 100-1;
+FOR i FROM n DOWNTO 2 DO
+sito [i] := 1;
+ENDFOR
+FOR i FROM 2 TO n DO
+IF sito [i] <> 0 THEN
+j := i + i;
+WHILE j <= n DO
+sito [j] := 0;
+j := j + i;
+ENDWHILE
+WRITE i;
+ENDIF
+ENDFOR
 END

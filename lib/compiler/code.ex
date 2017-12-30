@@ -101,7 +101,7 @@ defmodule Compiler.Code do
     {"!#{start}!#{assembly}", state}
   end
 
-  defp parse_cmd({line, :for, {name, from, to, cmds, :to} = for}, {variables, read_only, address, errors} = state) do
+  defp parse_cmd({line, :for, {name, from, to, cmds, dir} = for}, {variables, read_only, address, errors} = state) do
     {assembly, {_variables, _read_only, _address, errors}} = parse_for(for, {variables, read_only, address, errors}, line)
     {assembly, {variables, read_only, address, errors}}
   end
@@ -184,6 +184,26 @@ defmodule Compiler.Code do
     start = Labels.get_label()
 
     assembly = "#{i_assembly}#{to_code}INC\nSUB #{i_addr}\nSTORE #{iter_addr}\n!#{start}!LOAD #{iter_addr}\nJZERO #{skip}\nDEC\nSTORE #{iter_addr}\n#{code_assembly}LOAD #{i_addr}\nINC\nSTORE #{i_addr}\nJUMP #{start}\n!#{skip}!"
+
+    {assembly, {variables, read_only, address, errors}}
+  end
+
+  defp parse_for({name, from, to, cmds, :downto}, {variables, read_only, address, errors} = state, line) do
+    {from_code, state} = parse_expression(from, state, line)
+    {to_code, {variables, read_only, address, errors}} = parse_expression(to, state, line)
+
+    i_addr = address
+    iter_addr = address+1
+    read = Map.put(read_only, name, {:var, 1, i_addr})
+
+    {_, code_assembly, errors} = gen_assembly(cmds, {variables, read, address+2, errors}, "")
+
+    i_assembly = "#{from_code}STORE #{i_addr}\n"
+
+    skip = Labels.get_label()
+    start = Labels.get_label()
+
+    assembly = "#{to_code}STORE 9\n#{i_assembly}INC\nSUB 9\nSTORE #{iter_addr}\n!#{start}!LOAD #{iter_addr}\nJZERO #{skip}\nDEC\nSTORE #{iter_addr}\n#{code_assembly}LOAD #{i_addr}\nDEC\nSTORE #{i_addr}\nJUMP #{start}\n!#{skip}!"
 
     {assembly, {variables, read_only, address, errors}}
   end

@@ -22,8 +22,8 @@ cmd -> variable ':=' expression';' : {line_number('$2'), assign, {'$1', '$3'}}.
 cmd -> IF condition THEN code ELSE code ENDIF : {line_number('$1'), ifelse, {'$2', '$4', '$6'}}.
 cmd -> IF condition THEN code ENDIF : {line_number('$1'), ifonly, {'$2', '$4'}}.
 cmd -> WHILE condition DO code ENDWHILE : {line_number('$1'), while, {'$2', '$4'}}.
-cmd -> FOR identifier FROM value TO value DO code ENDFOR : {line_number('$1'), for, {get_identifier_name('$2'), '$4', '$6', '$8', to}}.
 cmd -> FOR identifier FROM value DOWNTO value DO code ENDFOR : {line_number('$1'), for, {get_identifier_name('$2'), '$4', '$6', '$8', downto}}.
+cmd -> FOR identifier FROM value TO value DO code ENDFOR : {line_number('$1'), for, {get_identifier_name('$2'), '$4', '$6', '$8', to}}.
 cmd -> READ variable ';': {line_number('$1'), read, {'$2'}}.
 cmd -> WRITE value ';': {line_number('$1'), write, {'$2'}}.
 
