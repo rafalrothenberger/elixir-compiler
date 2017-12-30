@@ -1,6 +1,6 @@
 Definitions.
 
-LABEL       = !.*!
+LABEL       = ![^!]*!
 ANY         = .
 NEWLINE     = '\n'
 

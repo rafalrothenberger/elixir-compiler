@@ -6,7 +6,7 @@ defmodule Compiler.Labels do
   end
 
   def get_label() do
-    Agent.get_and_update(:labels, fn i -> {"#LABEL_#{i}", i+1} end)
+    Agent.get_and_update(:labels, fn i -> {"#LABEL_#{i}#", i+1} end)
   end
 
 end

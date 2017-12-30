@@ -19,6 +19,14 @@ IF                                          : {token, {'IF', TokenLine}}.
 THEN                                        : {token, {'THEN', TokenLine}}.
 ELSE                                        : {token, {'ELSE', TokenLine}}.
 ENDIF                                       : {token, {'ENDIF', TokenLine}}.
+WHILE                                       : {token, {'WHILE', TokenLine}}.
+DO                                          : {token, {'DO', TokenLine}}.
+ENDWHILE                                    : {token, {'ENDWHILE', TokenLine}}.
+TO                                          : {token, {'TO', TokenLine}}.
+DOWN                                        : {token, {'DOWNTO', TokenLine}}.
+FOR                                         : {token, {'FOR', TokenLine}}.
+FROM                                        : {token, {'FROM', TokenLine}}.
+ENDFOR                                      : {token, {'ENDFOR', TokenLine}}.
 {ID}+                                       : {token, {identifier, TokenLine, TokenChars}}.
 {NUM}                                       : {token, {number, TokenLine, TokenChars}}.
 \[                                          : {token, {'[', TokenLine}}.

@@ -19,6 +19,10 @@ defmodule Compiler.Code do
     gen_assembly(cmds, {variables, read_only, address, errors}, "#{assembly}#{code}")
   end
 
+  defp parse_cmd(cmd, state) when is_binary(cmd) do
+    {cmd, state}
+  end
+
   defp parse_cmd({line, :assign, {{type, name, _ops} = target, expression}}, {variables, read_only, address, errors} = state) do
     cond do
       Map.has_key?(read_only, name) ->
@@ -66,10 +70,9 @@ defmodule Compiler.Code do
 
   defp parse_cmd({line, :write, {{type, name, _ops} = target}}, {variables, read_only, address, errors} = state) do
     cond do
-      Map.has_key?(read_only, name) ->
-        {"", {variables, read_only, address, [{:assign_read_only, {name}, line} | errors]}}
-      Map.has_key?(variables, name) ->
-        var = Map.get(variables, name)
+      Map.has_key?(read_only, name) or Map.has_key?(variables, name) ->
+        var = Map.get_lazy(read_only, name, fn -> Map.get(variables, name) end)
+        IO.inspect(var)
         {var_type, _var_size, _var_mem_addr} = var
         if (var_type == type) do
           put({target, var}, state, line)
@@ -85,73 +88,180 @@ defmodule Compiler.Code do
   end
 
   defp parse_cmd({line, :ifonly, {condition, cmds}}, {variables, read_only, address, errors} = state) do
-    parse_condition({condition, cmds}, state, line)
+    parse_condition({condition, cmds, []}, state, line)
   end
 
-  defp parse_condition({{:equals, {:number, {a}}, {:number, {b}}}, cmds}, {variables, read_only, address, errors} = state, line) do
+  defp parse_cmd({line, :ifelse, {condition, if_cmds, else_cmds}}, {variables, read_only, address, errors} = state) do
+    parse_condition({condition, if_cmds, else_cmds}, state, line)
+  end
+
+  defp parse_cmd({line, :while, {condition, cmds}}, {variables, read_only, address, errors} = state) when is_list(cmds) do
+    start = Labels.get_label()
+    {assembly, state} = parse_condition({condition, cmds ++ ["JUMP #{start}\n"], []}, state, line)
+    {"!#{start}!#{assembly}", state}
+  end
+
+  defp parse_cmd({line, :for, {name, from, to, cmds, :to} = for}, {variables, read_only, address, errors} = state) do
+    {assembly, {_variables, _read_only, _address, errors}} = parse_for(for, {variables, read_only, address, errors}, line)
+    {assembly, {variables, read_only, address, errors}}
+  end
+
+  defp parse_for({name, {:number, {from}}, {:number, {to}}, cmds, :to}, {variables, read_only, address, errors} = state, line) do
+    i_addr = address
+    iter_addr = address+1
+    read = Map.put(read_only, name, {:var, 1, i_addr})
+    i_assembly = "#{parse_number(from)}STORE #{i_addr}\n"
+    cond do
+      from == to ->
+        {_, assembly, errors} = gen_assembly(cmds, {variables, read, address+2, errors}, "")
+        {"#{i_assembly}#{assembly}", {variables, read_only, address, errors}}
+      from < to ->
+        {_, code_assembly, errors} = gen_assembly(cmds, {variables, read, address+2, errors}, "")
+        a = to-from+1
+        skip = Labels.get_label()
+        start = Labels.get_label()
+        assembly = "#{i_assembly}#{parse_number(a)}STORE #{iter_addr}\n!#{start}!LOAD #{iter_addr}\nJZERO #{skip}\nDEC\nSTORE #{iter_addr}\n#{code_assembly}LOAD #{i_addr}\nINC\nSTORE #{i_addr}\nJUMP #{start}\n!#{skip}!"
+
+        {assembly, {variables, read_only, address, errors}}
+      true ->
+        {"", state}
+    end
+  end
+
+  defp parse_for({name, {:number, {from}}, {:var, to_name, {}} = to, cmds, :to}, {variables, read_only, address, errors} = state, line) do
+    {mem_addr, {variables, read_only, address, errors}} = get_mem_addr(to, state, line)
+
+    i_addr = address
+    iter_addr = address+1
+    read = Map.put(read_only, name, {:var, 1, i_addr})
+    i_assembly = "#{parse_number(from)}STORE #{i_addr}\n"
+
+    {_, code_assembly, errors} = gen_assembly(cmds, {variables, read, address+2, errors}, "")
+
+    skip = Labels.get_label()
+    start = Labels.get_label()
+
+    assembly = "#{i_assembly}LOAD #{mem_addr}\nINC\nSUB #{i_addr}\nSTORE #{iter_addr}\n!#{start}!LOAD #{iter_addr}\nJZERO #{skip}\nDEC\nSTORE #{iter_addr}\n#{code_assembly}LOAD #{i_addr}\nINC\nSTORE #{i_addr}\nJUMP #{start}\n!#{skip}!"
+
+#    assembly = "#{i_assembly}#{parse_number(to)}INC\nSUB #{mem_addr}\nSTORE #{iter_addr}\n!#{start}!LOAD #{iter_addr}\nJZERO #{skip}\nDEC\nSTORE #{iter_addr}\n#{code_assembly}LOAD #{i_addr}\nINC\nSTORE #{i_addr}\nJUMP #{start}\n!#{skip}!"
+
+    {assembly, {variables, read_only, address, errors}}
+  end
+
+  defp parse_for({name, {:var, from_name, {}} = from, {:number, {to}}, cmds, :to}, {variables, read_only, address, errors} = state, line) do
+    {mem_addr, {variables, read_only, address, errors}} = get_mem_addr(from, state, line)
+
+    i_addr = address
+    iter_addr = address+1
+    read = Map.put(read_only, name, {:var, 1, i_addr})
+    i_assembly = "LOAD #{mem_addr}\nSTORE #{i_addr}\n"
+
+    {_, code_assembly, errors} = gen_assembly(cmds, {variables, read, address+2, errors}, "")
+
+    skip = Labels.get_label()
+    start = Labels.get_label()
+
+    assembly = "#{i_assembly}#{parse_number(to)}INC\nSUB #{mem_addr}\nSTORE #{iter_addr}\n!#{start}!LOAD #{iter_addr}\nJZERO #{skip}\nDEC\nSTORE #{iter_addr}\n#{code_assembly}LOAD #{i_addr}\nINC\nSTORE #{i_addr}\nJUMP #{start}\n!#{skip}!"
+
+#    assembly = "#{i_assembly}#{parse_number(a)}STORE #{iter_addr}\n!#{start}!LOAD #{iter_addr}\nJZERO #{skip}\nDEC\nSTORE #{iter_addr}\n#{code_assembly}LOAD #{i_addr}\nINC\nSTORE #{i_addr}\nJUMP #{start}\n!#{skip}!"
+
+    {assembly, {variables, read_only, address, errors}}
+  end
+
+  defp parse_condition({{:equals, {:number, {a}}, {:number, {b}}}, if_cmds, else_cmds}, {variables, read_only, address, errors} = state, line) do
     if (a == b) do
-      {_, assembly, errors} = gen_assembly(cmds, state, "")
+      {_, assembly, errors} = gen_assembly(if_cmds, state, "")
       {assembly, {variables, read_only, address, errors}}
     else
-      {"", {variables, read_only, address, errors}}
+      {_, assembly, errors} = gen_assembly(else_cmds, state, "")
+      {assembly, {variables, read_only, address, errors}}
     end
   end
 
-  defp parse_condition({{:equals, {:number, {n}}, {:var, name, {}} = var}, cmds}, {variables, read_only, address, errors} = state, line) do
-    parse_condition({{:equals, var, {:number, {n}}}, cmds}, state, line)
+  defp parse_condition({{:equals, {:number, {n}}, {:var, name, {}} = var}, if_cmds, else_cmds}, {variables, read_only, address, errors} = state, line) do
+    parse_condition({{:equals, var, {:number, {n}}}, if_cmds, else_cmds}, state, line)
   end
 
-  defp parse_condition({{:equals, {:var, name, {}} = var, value}, cmds}, {variables, read_only, address, errors} = state, line) do
+  defp parse_condition({{:equals, {:var, name, {}} = var, value}, if_cmds, else_cmds}, {variables, read_only, address, errors} = state, line) do
     {value_code, state} = parse_expression(value, state, line)
     {mem_addr, state} = get_mem_addr(var, state, line)
-    skip = Labels.get_label()
+    go_else = Labels.get_label()
     start = Labels.get_label()
-    code = "#{value_code}INC\nSUB #{mem_addr}\nJZERO #{skip}\nDEC\nJZERO #{start}\nJUMP #{skip}\n!#{start}!"
-    {_, assembly, errors} = gen_assembly(cmds, state, "")
-    {"#{code}#{assembly}!#{skip}!", {variables, read_only, address, errors}}
+    skip = Labels.get_label()
+    code = "#{value_code}INC\nSUB #{mem_addr}\nJZERO #{go_else}\nDEC\nJZERO #{start}\nJUMP #{go_else}\n!#{start}!"
+    {_, assembly, errors} = gen_assembly(if_cmds, state, "")
+    case else_cmds do
+      [] -> {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
+      _ ->
+        {_, else_assembly, errors} = gen_assembly(else_cmds, state, "")
+        {"#{code}#{assembly}JUMP #{skip}\n!#{go_else}!#{else_assembly}!#{skip}!", {variables, read_only, address, errors}}
+    end
+    #    {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
   end
 
-  defp parse_condition({{:equals, {:array, name, _ops} = var, value}, cmds}, {variables, read_only, address, errors} = state, line) do
+  defp parse_condition({{:equals, {:array, name, _ops} = var, value}, if_cmds, else_cmds}, {variables, read_only, address, errors} = state, line) do
     {value_code, state} = parse_expression(value, state, line)
     {array_code, state} = get_arr_mem_addr(var, state, line)
-    skip = Labels.get_label()
+    go_else = Labels.get_label()
     start = Labels.get_label()
-    code = "#{array_code}STORE 1\n#{value_code}INC\nSUBI 1\nJZERO #{skip}\nDEC\nJZERO #{start}\nJUMP #{skip}\n!#{start}!"
-    {_, assembly, errors} = gen_assembly(cmds, state, "")
-    {"#{code}#{assembly}!#{skip}!", {variables, read_only, address, errors}}
+    skip = Labels.get_label()
+    code = "#{array_code}STORE 1\n#{value_code}INC\nSUBI 1\nJZERO #{go_else}\nDEC\nJZERO #{start}\nJUMP #{go_else}\n!#{start}!"
+    {_, assembly, errors} = gen_assembly(if_cmds, state, "")
+    case else_cmds do
+      [] -> {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
+      _ ->
+        {_, else_assembly, errors} = gen_assembly(else_cmds, state, "")
+        {"#{code}#{assembly}JUMP #{skip}\n!#{go_else}!#{else_assembly}!#{skip}!", {variables, read_only, address, errors}}
+    end
+    #    {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
   end
 
-  defp parse_condition({{:ne, {:number, {a}}, {:number, {b}}}, cmds}, {variables, read_only, address, errors} = state, line) do
+  defp parse_condition({{:ne, {:number, {a}}, {:number, {b}}}, if_cmds, else_cmds}, {variables, read_only, address, errors} = state, line) do
     if (a != b) do
-      {_, assembly, errors} = gen_assembly(cmds, state, "")
+      {_, assembly, errors} = gen_assembly(if_cmds, state, "")
       {assembly, {variables, read_only, address, errors}}
     else
-      {"", {variables, read_only, address, errors}}
+      {_, assembly, errors} = gen_assembly(else_cmds, state, "")
+      {assembly, {variables, read_only, address, errors}}
     end
   end
 
-  defp parse_condition({{:ne, {:number, {n}}, {:var, name, {}} = var}, cmds}, {variables, read_only, address, errors} = state, line) do
-    parse_condition({{:ne, var, {:number, {n}}}, cmds}, state, line)
+  defp parse_condition({{:ne, {:number, {n}}, {:var, name, {}} = var}, if_cmds, else_cmds}, {variables, read_only, address, errors} = state, line) do
+    parse_condition({{:ne, var, {:number, {n}}}, if_cmds, else_cmds}, state, line)
   end
 
-  defp parse_condition({{:ne, {:var, name, {}} = var, value}, cmds}, {variables, read_only, address, errors} = state, line) do
+  defp parse_condition({{:ne, {:var, name, {}} = var, value}, if_cmds, else_cmds}, {variables, read_only, address, errors} = state, line) do
     {value_code, state} = parse_expression(value, state, line)
     {mem_addr, state} = get_mem_addr(var, state, line)
-    skip = Labels.get_label()
+    go_else = Labels.get_label()
     start = Labels.get_label()
-    code = "#{value_code}INC\nSUB #{mem_addr}\nJZERO #{start}\nDEC\nJZERO #{skip}\n!#{start}!"
-    {_, assembly, errors} = gen_assembly(cmds, state, "")
-    {"#{code}#{assembly}!#{skip}!", {variables, read_only, address, errors}}
+    skip = Labels.get_label()
+    code = "#{value_code}INC\nSUB #{mem_addr}\nJZERO #{start}\nDEC\nJZERO #{go_else}\n!#{start}!"
+    {_, assembly, errors} = gen_assembly(if_cmds, state, "")
+    case else_cmds do
+      [] -> {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
+      _ ->
+        {_, else_assembly, errors} = gen_assembly(else_cmds, state, "")
+        {"#{code}#{assembly}JUMP #{skip}\n!#{go_else}!#{else_assembly}!#{skip}!", {variables, read_only, address, errors}}
+    end
+    #    {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
   end
 
-  defp parse_condition({{:ne, {:array, name, _ops} = var, value}, cmds}, {variables, read_only, address, errors} = state, line) do
+  defp parse_condition({{:ne, {:array, name, _ops} = var, value}, if_cmds, else_cmds}, {variables, read_only, address, errors} = state, line) do
     {value_code, state} = parse_expression(value, state, line)
     {array_code, state} = get_arr_mem_addr(var, state, line)
-    skip = Labels.get_label()
+    go_else = Labels.get_label()
     start = Labels.get_label()
-    code = "#{array_code}STORE 1\n#{value_code}INC\nSUBI 1\nJZERO #{start}\nDEC\nJZERO #{skip}\n!#{start}!"
-    {_, assembly, errors} = gen_assembly(cmds, state, "")
-    {"#{code}#{assembly}!#{skip}!", {variables, read_only, address, errors}}
+    skip = Labels.get_label()
+    code = "#{array_code}STORE 1\n#{value_code}INC\nSUBI 1\nJZERO #{start}\nDEC\nJZERO #{go_else}\n!#{start}!"
+    {_, assembly, errors} = gen_assembly(if_cmds, state, "")
+    case else_cmds do
+      [] -> {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
+      _ ->
+        {_, else_assembly, errors} = gen_assembly(else_cmds, state, "")
+        {"#{code}#{assembly}JUMP #{skip}\n!#{go_else}!#{else_assembly}!#{skip}!", {variables, read_only, address, errors}}
+    end
+    #    {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
   end
 
   defp put({{:var, _name, {}}, {_type, _size, mem_addr}}, state, _line) do

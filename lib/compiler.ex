@@ -23,6 +23,11 @@ defmodule Compiler do
     case res do
       {:ok, assembly, _} ->
         IO.inspect(assembly)
+
+        {:ok, file} = File.open(filename <> ".labels", [:write])
+        IO.write(file, assembly)
+        IO.write(file, "HALT\n")
+
         {:ok, labels, _} = :label_lexer.string(String.to_charlist(assembly))
 
         assembly = clear_labels(labels, assembly)
@@ -43,12 +48,12 @@ defmodule Compiler do
 
   defp clear_labels([{label, line_no}], code) do
     label = List.to_string(label)
-    code |> String.replace("!" <> label <> "!", "") |> String.replace(label, "#{line_no}")
+    code |> String.replace(~r/![^!]+!/, "") |> String.replace(label, "#{line_no}")
   end
 
   defp clear_labels([{label, line_no} | labels], code) do
     label = List.to_string(label)
-    code = code |> String.replace("!" <> label <> "!", "") |> String.replace(label, "#{line_no}")
+    code = code |> String.replace(~r/![^!]+!/, "") |> String.replace(label, "#{line_no}")
     clear_labels(labels, code)
   end
 
