@@ -457,13 +457,14 @@ defmodule Compiler.Code do
   def parse_expression({:multiply, left, right}, {variables, read_only, address, errors} = state, line) do
     {left_code, state} = parse_expression(left, state, line)
     {right_code, state} = parse_expression(right, state, line)
-    store_code = "ZERO\nSTORE 9\n#{left_code}STORE 8\n#{right_code}STORE 7\n"
 
     skip = Labels.get_label()
     add_skip = Labels.get_label()
+    add = Labels.get_label()
     start = Labels.get_label()
 
-    assembly = "#{store_code}!#{start}!JZERO #{skip}\nSHR\nSHL\nSTORE 6\nLOAD 7\nSUB 6\nJZERO #{add_skip}\nLOAD 9\nADD 8\nSTORE 9\n!#{add_skip}!LOAD 8\nSHL\nSTORE 8\nLOAD 7\nSHR\nSTORE 7\nJUMP #{start}\n!#{skip}!LOAD 9\n"
+    store_code = "ZERO\nSTORE 9\n#{left_code}STORE 8\n#{right_code}"
+    assembly = "#{store_code}!#{start}!STORE 7\nJZERO #{skip}\nJODD #{add}\nJUMP #{add_skip}\n!#{add}!LOAD 9\nADD 8\nSTORE 9\n!#{add_skip}!LOAD 8\nSHL\nSTORE 8\nLOAD 7\nSHR\nJUMP #{start}\n!#{skip}!LOAD 9\n"
 
     {assembly, state}
   end
@@ -488,31 +489,81 @@ defmodule Compiler.Code do
     end
   end
 
-  def parse_expression({:divide, expression, {:number, {n}}}, {variables, read_only, address, errors} = state, line) do
+  def parse_expression({:divide, {:number, {n}} = dividend, divider}, {variables, read_only, address, errors} = state, line) do
     #    parse_expression({:divide, {:number, {n}}, expression}, {variables, read_only, address, errors}, line)
     cond do
       n == 0 -> {"ZERO\n", state}
-      n == 1 -> parse_expression(expression, state, line)
       true ->
-        {expression_code, state} = parse_expression(expression, state, line)
-        number = parse_number(n)
-        assembly = "ZERO\nSTORE 7\n#{number}STORE 8\n#{expression_code}INC\n"
-        start = Labels.get_label()
+        {dividend_code, state} = parse_expression(dividend, state, line)
+        {divider_code, state} = parse_expression(divider, state, line)
+
+        shr = Labels.get_label()
         out = Labels.get_label()
-        assembly = "#{assembly}STORE 9\n!#{start}!LOAD 9\nSUB 8\nJZERO #{out}\nSTORE 9\nLOAD 7\nINC\nSTORE 7\nJUMP #{start}\n!#{out}!LOAD 7\n"
-        {assembly, state}
+        power = Labels.get_label()
+
+        store_code = "#{divider_code}JZERO #{out}\nSTORE 7\nZERO\nSTORE 9\nINC\nSTORE 6\n#{dividend_code}STORE 8\n"
+
+
+        power_code = "!#{power}!INC\nSUB 7\nJZERO #{shr}\nDEC\nJZERO #{out}\nLOAD 7\nSHL\nSTORE 7\nLOAD 6\nSHL\nSTORE 6\nLOAD 8\nJUMP #{power}\n!#{shr}!"
+
+        assembly = "LOAD 6\nSHR\nSTORE 6\nJZERO #{out}\nLOAD 7\nSHR\nSTORE 7\nLOAD 8\nINC\nSUB 7\nJZERO #{shr}\nDEC\nSTORE 8\nLOAD 6\nADD 9\nSTORE 9\nJUMP #{shr}\n!#{out}!LOAD 9\nADD 6\n"
+
+        {"#{store_code}#{power_code}#{assembly}", state}
+    end
+  end
+
+  def parse_expression({:divide, dividend, {:number, {n}} = divider}, {variables, read_only, address, errors} = state, line) do
+    #    parse_expression({:divide, {:number, {n}}, expression}, {variables, read_only, address, errors}, line)
+    cond do
+      n == 0 -> {"ZERO\n", state}
+      n == 1 -> parse_expression(dividend, state, line)
+      true ->
+        {dividend_code, state} = parse_expression(dividend, state, line)
+        {divider_code, state} = parse_expression(divider, state, line)
+
+        shr = Labels.get_label()
+        out = Labels.get_label()
+        power = Labels.get_label()
+
+        store_code = "#{divider_code}JZERO #{out}\nSTORE 7\nZERO\nSTORE 9\nINC\nSTORE 6\n#{dividend_code}STORE 8\n"
+
+
+        power_code = "!#{power}!INC\nSUB 7\nJZERO #{shr}\nDEC\nJZERO #{out}\nLOAD 7\nSHL\nSTORE 7\nLOAD 6\nSHL\nSTORE 6\nLOAD 8\nJUMP #{power}\n!#{shr}!"
+
+        assembly = "LOAD 6\nSHR\nSTORE 6\nJZERO #{out}\nLOAD 7\nSHR\nSTORE 7\nLOAD 8\nINC\nSUB 7\nJZERO #{shr}\nDEC\nSTORE 8\nLOAD 6\nADD 9\nSTORE 9\nJUMP #{shr}\n!#{out}!LOAD 9\nADD 6\n"
+
+        {"#{store_code}#{power_code}#{assembly}", state}
     end
   end
 
   def parse_expression({:divide, dividend, divider}, {variables, read_only, address, errors} = state, line) do
     {dividend_code, state} = parse_expression(dividend, state, line)
     {divider_code, state} = parse_expression(divider, state, line)
-    start = Labels.get_label()
+
+    shr = Labels.get_label()
     out = Labels.get_label()
-    assembly = "ZERO\nSTORE 7\n#{divider_code}JZERO #{out}\nSTORE 8\n#{dividend_code}INC\nSTORE 9\n"
-    assembly = "#{assembly}!#{start}!LOAD 9\nSUB 8\nJZERO #{out}\nSTORE 9\nLOAD 7\nINC\nSTORE 7\nJUMP #{start}\n!#{out}!LOAD 7\n"
-    {assembly, state}
+    power = Labels.get_label()
+
+    store_code = "#{divider_code}JZERO #{out}\nSTORE 7\nZERO\nSTORE 9\nINC\nSTORE 6\n#{dividend_code}STORE 8\n"
+
+
+    power_code = "!#{power}!INC\nSUB 7\nJZERO #{shr}\nDEC\nJZERO #{out}\nLOAD 7\nSHL\nSTORE 7\nLOAD 6\nSHL\nSTORE 6\nLOAD 8\nJUMP #{power}\n!#{shr}!"
+
+    assembly = "LOAD 6\nSHR\nSTORE 6\nJZERO #{out}\nLOAD 7\nSHR\nSTORE 7\nLOAD 8\nINC\nSUB 7\nJZERO #{shr}\nDEC\nSTORE 8\nLOAD 6\nADD 9\nSTORE 9\nJUMP #{shr}\n!#{out}!LOAD 9\nADD 6\n"
+
+    {"#{store_code}#{power_code}#{assembly}", state}
+
   end
+
+#  def parse_expression({:divide, dividend, divider}, {variables, read_only, address, errors} = state, line) do
+#    {dividend_code, state} = parse_expression(dividend, state, line)
+#    {divider_code, state} = parse_expression(divider, state, line)
+#    start = Labels.get_label()
+#    out = Labels.get_label()
+#    assembly = "ZERO\nSTORE 7\n#{divider_code}JZERO #{out}\nSTORE 8\n#{dividend_code}INC\nSTORE 9\n"
+#    assembly = "#{assembly}!#{start}!LOAD 9\nSUB 8\nJZERO #{out}\nSTORE 9\nLOAD 7\nINC\nSTORE 7\nJUMP #{start}\n!#{out}!LOAD 7\n"
+#    {assembly, state}
+#  end
 
   def parse_expression({:mod, {:number, {a}}, {:number, {b}}}, {variables, read_only, address, errors} = state, line) do
     if (b <= 1) do
@@ -523,33 +574,74 @@ defmodule Compiler.Code do
     end
   end
 
-  def parse_expression({:mod, expression, {:number, {n}}}, {variables, read_only, address, errors} = state, line) do
+  def parse_expression({:mod, dividend, {:number, {n}} = divider}, {variables, read_only, address, errors} = state, line) do
     #    parse_expression({:divide, {:number, {n}}, expression}, {variables, read_only, address, errors}, line)
     cond do
       n <= 1 -> {"ZERO\n", state}
       true ->
-        {expression_code, state} = parse_expression(expression, state, line)
-        number = parse_number(n)
-        assembly = "#{number}STORE 8\n#{expression_code}"
-        start = Labels.get_label()
+        {dividend_code, state} = parse_expression(dividend, state, line)
+        {divider_code, state} = parse_expression(divider, state, line)
+
+        shr = Labels.get_label()
         out = Labels.get_label()
-        final = Labels.get_label()
-        final_out = Labels.get_label()
-        assembly = "#{assembly}!#{start}!STORE 9\nSUB 8\nJZERO #{out}\nJUMP #{start}\n!#{out}!LOAD 9\nINC\nSUB 8\nJZERO #{final}\nDEC\nSTORE 9\n!#{final}!LOAD 9\n"
-        {assembly, state}
+        power = Labels.get_label()
+        zero = Labels.get_label()
+        zero_out = Labels.get_label()
+
+        store_code = "#{divider_code}JZERO #{out}\nSTORE 7\nZERO\nSTORE 9\nINC\nSTORE 6\n#{dividend_code}STORE 8\n"
+
+
+        power_code = "!#{power}!INC\nSUB 7\nJZERO #{shr}\nDEC\nJZERO #{zero}\nLOAD 7\nSHL\nSTORE 7\nLOAD 6\nSHL\nSTORE 6\nLOAD 8\nJUMP #{power}\n!#{shr}!"
+
+        assembly = "LOAD 6\nSHR\nSTORE 6\nJZERO #{out}\nLOAD 7\nSHR\nSTORE 7\nLOAD 8\nINC\nSUB 7\nJZERO #{shr}\nDEC\nSTORE 8\nJUMP #{shr}\n!#{zero}!ZERO\nJUMP #{zero_out}\n!#{out}!LOAD 8\n!#{zero_out}!"
+
+        {"#{store_code}#{power_code}#{assembly}", state}
+    end
+  end
+
+  def parse_expression({:mod, {:number, {n}} = dividend, divider}, {variables, read_only, address, errors} = state, line) do
+    #    parse_expression({:divide, {:number, {n}}, expression}, {variables, read_only, address, errors}, line)
+    cond do
+      n == 0 -> {"ZERO\n", state}
+      true ->
+        {dividend_code, state} = parse_expression(dividend, state, line)
+        {divider_code, state} = parse_expression(divider, state, line)
+
+        shr = Labels.get_label()
+        out = Labels.get_label()
+        power = Labels.get_label()
+        zero = Labels.get_label()
+        zero_out = Labels.get_label()
+
+        store_code = "#{divider_code}JZERO #{out}\nSTORE 7\nZERO\nSTORE 9\nINC\nSTORE 6\n#{dividend_code}STORE 8\n"
+
+
+        power_code = "!#{power}!INC\nSUB 7\nJZERO #{shr}\nDEC\nJZERO #{zero}\nLOAD 7\nSHL\nSTORE 7\nLOAD 6\nSHL\nSTORE 6\nLOAD 8\nJUMP #{power}\n!#{shr}!"
+
+        assembly = "LOAD 6\nSHR\nSTORE 6\nJZERO #{out}\nLOAD 7\nSHR\nSTORE 7\nLOAD 8\nINC\nSUB 7\nJZERO #{shr}\nDEC\nSTORE 8\nJUMP #{shr}\n!#{zero}!ZERO\nJUMP #{zero_out}\n!#{out}!LOAD 8\n!#{zero_out}!"
+
+        {"#{store_code}#{power_code}#{assembly}", state}
     end
   end
 
   def parse_expression({:mod, dividend, divider}, {variables, read_only, address, errors} = state, line) do
     {dividend_code, state} = parse_expression(dividend, state, line)
     {divider_code, state} = parse_expression(divider, state, line)
-    start = Labels.get_label()
+
+    shr = Labels.get_label()
     out = Labels.get_label()
-    final = Labels.get_label()
-    final_out = Labels.get_label()
-    assembly = "ZERO\nSTORE 9\n#{divider_code}JZERO #{final}\nSTORE 8\n#{dividend_code}"
-    assembly = "#{assembly}!#{start}!STORE 9\nSUB 8\nJZERO #{out}\nJUMP #{start}\n!#{out}!LOAD 9\nINC\nSUB 8\nJZERO #{final}\nDEC\nSTORE 9\n!#{final}!LOAD 9\n"
-    {assembly, state}
+    power = Labels.get_label()
+    zero = Labels.get_label()
+    zero_out = Labels.get_label()
+
+    store_code = "#{divider_code}JZERO #{out}\nSTORE 7\nZERO\nSTORE 9\nINC\nSTORE 6\n#{dividend_code}STORE 8\n"
+
+
+    power_code = "!#{power}!INC\nSUB 7\nJZERO #{shr}\nDEC\nJZERO #{zero}\nLOAD 7\nSHL\nSTORE 7\nLOAD 6\nSHL\nSTORE 6\nLOAD 8\nJUMP #{power}\n!#{shr}!"
+
+    assembly = "LOAD 6\nSHR\nSTORE 6\nJZERO #{out}\nLOAD 7\nSHR\nSTORE 7\nLOAD 8\nINC\nSUB 7\nJZERO #{shr}\nDEC\nSTORE 8\nJUMP #{shr}\n!#{zero}!ZERO\nJUMP #{zero_out}\n!#{out}!LOAD 8\n!#{zero_out}!"
+
+    {"#{store_code}#{power_code}#{assembly}", state}
   end
 
   defp calc_arr_mem_addr({{:array, name, {:number, i}}, {_type, size, mem_addr}}, {variables, read_only, address, errors} = state, line) do
