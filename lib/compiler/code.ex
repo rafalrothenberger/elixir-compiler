@@ -108,7 +108,7 @@ defmodule Compiler.Code do
 
   defp parse_for({name, {:number, {from}}, {:number, {to}}, cmds, :to}, {variables, read_only, address, errors} = state, line) do
     i_addr = address
-    iter_addr = address+1
+    end_addr = address+1
     read = Map.put(read_only, name, {:var, 1, i_addr})
     i_assembly = "#{parse_number(from)}STORE #{i_addr}\n"
     cond do
@@ -117,14 +117,13 @@ defmodule Compiler.Code do
         {"#{i_assembly}#{assembly}", {variables, read_only, address, errors}}
       from < to ->
         {_, code_assembly, errors} = gen_assembly(cmds, {variables, read, address+2, errors}, "")
-        a = to-from+1
+
         skip = Labels.get_label()
         start = Labels.get_label()
-        assembly = "#{i_assembly}#{parse_number(a)}STORE #{iter_addr}\n!#{start}!LOAD #{iter_addr}\nJZERO #{skip}\nDEC\nSTORE #{iter_addr}\n#{code_assembly}LOAD #{i_addr}\nINC\nSTORE #{i_addr}\nJUMP #{start}\n!#{skip}!"
+
+        assembly = "#{i_assembly}#{parse_number(to+1)}STORE #{end_addr}\n!#{start}!SUB #{i_addr}\nJZERO #{skip}\n#{code_assembly}LOAD #{i_addr}\nINC\nSTORE #{i_addr}\nLOAD #{end_addr}\nJUMP #{start}\n!#{skip}!"
 
         {assembly, {variables, read_only, address, errors}}
-      true ->
-        {"", state}
     end
   end
 
@@ -132,7 +131,7 @@ defmodule Compiler.Code do
     {mem_addr, {variables, read_only, address, errors}} = get_mem_addr(to, state, line)
 
     i_addr = address
-    iter_addr = address+1
+    end_addr = address+1
     read = Map.put(read_only, name, {:var, 1, i_addr})
     i_assembly = "#{parse_number(from)}STORE #{i_addr}\n"
 
@@ -141,9 +140,9 @@ defmodule Compiler.Code do
     skip = Labels.get_label()
     start = Labels.get_label()
 
-    assembly = "#{i_assembly}LOAD #{mem_addr}\nINC\nSUB #{i_addr}\nSTORE #{iter_addr}\n!#{start}!LOAD #{iter_addr}\nJZERO #{skip}\nDEC\nSTORE #{iter_addr}\n#{code_assembly}LOAD #{i_addr}\nINC\nSTORE #{i_addr}\nJUMP #{start}\n!#{skip}!"
+#    assembly = "#{i_assembly}LOAD #{mem_addr}\nINC\nSUB #{i_addr}\nSTORE #{end_addr}\n!#{start}!LOAD #{end_addr}\nJZERO #{skip}\nDEC\nSTORE #{end_addr}\n#{code_assembly}LOAD #{i_addr}\nINC\nSTORE #{i_addr}\nJUMP #{start}\n!#{skip}!"
 
-#    assembly = "#{i_assembly}#{parse_number(to)}INC\nSUB #{mem_addr}\nSTORE #{iter_addr}\n!#{start}!LOAD #{iter_addr}\nJZERO #{skip}\nDEC\nSTORE #{iter_addr}\n#{code_assembly}LOAD #{i_addr}\nINC\nSTORE #{i_addr}\nJUMP #{start}\n!#{skip}!"
+    assembly = "#{i_assembly}LOAD #{mem_addr}\nINC\nSTORE #{end_addr}\n!#{start}!SUB #{i_addr}\nJZERO #{skip}\n#{code_assembly}LOAD #{i_addr}\nINC\nSTORE #{i_addr}\nLOAD #{end_addr}\nJUMP #{start}\n!#{skip}!"
 
     {assembly, {variables, read_only, address, errors}}
   end
@@ -152,7 +151,7 @@ defmodule Compiler.Code do
     {mem_addr, {variables, read_only, address, errors}} = get_mem_addr(from, state, line)
 
     i_addr = address
-    iter_addr = address+1
+    end_addr = address+1
     read = Map.put(read_only, name, {:var, 1, i_addr})
     i_assembly = "LOAD #{mem_addr}\nSTORE #{i_addr}\n"
 
@@ -161,9 +160,7 @@ defmodule Compiler.Code do
     skip = Labels.get_label()
     start = Labels.get_label()
 
-    assembly = "#{i_assembly}#{parse_number(to)}INC\nSUB #{mem_addr}\nSTORE #{iter_addr}\n!#{start}!LOAD #{iter_addr}\nJZERO #{skip}\nDEC\nSTORE #{iter_addr}\n#{code_assembly}LOAD #{i_addr}\nINC\nSTORE #{i_addr}\nJUMP #{start}\n!#{skip}!"
-
-#    assembly = "#{i_assembly}#{parse_number(a)}STORE #{iter_addr}\n!#{start}!LOAD #{iter_addr}\nJZERO #{skip}\nDEC\nSTORE #{iter_addr}\n#{code_assembly}LOAD #{i_addr}\nINC\nSTORE #{i_addr}\nJUMP #{start}\n!#{skip}!"
+    assembly = "#{i_assembly}#{parse_number(to+1)}STORE #{end_addr}\n!#{start}!SUB #{i_addr}\nJZERO #{skip}\n#{code_assembly}LOAD #{i_addr}\nINC\nSTORE #{i_addr}\nLOAD #{end_addr}\nJUMP #{start}\n!#{skip}!"
 
     {assembly, {variables, read_only, address, errors}}
   end
@@ -173,7 +170,7 @@ defmodule Compiler.Code do
     {to_code, {variables, read_only, address, errors}} = parse_expression(to, state, line)
 
     i_addr = address
-    iter_addr = address+1
+    end_addr = address+1
     read = Map.put(read_only, name, {:var, 1, i_addr})
 
     {_, code_assembly, errors} = gen_assembly(cmds, {variables, read, address+2, errors}, "")
@@ -183,7 +180,29 @@ defmodule Compiler.Code do
     skip = Labels.get_label()
     start = Labels.get_label()
 
-    assembly = "#{i_assembly}#{to_code}INC\nSUB #{i_addr}\nSTORE #{iter_addr}\n!#{start}!LOAD #{iter_addr}\nJZERO #{skip}\nDEC\nSTORE #{iter_addr}\n#{code_assembly}LOAD #{i_addr}\nINC\nSTORE #{i_addr}\nJUMP #{start}\n!#{skip}!"
+#    assembly = "#{i_assembly}#{to_code}INC\nSUB #{i_addr}\nSTORE #{end_addr}\n!#{start}!LOAD #{end_addr}\nJZERO #{skip}\nDEC\nSTORE #{end_addr}\n#{code_assembly}LOAD #{i_addr}\nINC\nSTORE #{i_addr}\nJUMP #{start}\n!#{skip}!"
+
+    assembly = "#{i_assembly}#{to_code}INC\nSTORE #{end_addr}\n!#{start}!SUB #{i_addr}\nJZERO #{skip}\n#{code_assembly}LOAD #{i_addr}\nINC\nSTORE #{i_addr}\nLOAD #{end_addr}\nJUMP #{start}\n!#{skip}!"
+
+    {assembly, {variables, read_only, address, errors}}
+  end
+
+  defp parse_for({name, from, to, cmds, :to}, {variables, read_only, address, errors} = state, line) do
+    {from_code, state} = parse_expression(from, state, line)
+    {to_code, {variables, read_only, address, errors}} = parse_expression(to, state, line)
+
+    i_addr = address
+    end_addr = address+1
+    read = Map.put(read_only, name, {:var, 1, i_addr})
+
+    {_, code_assembly, errors} = gen_assembly(cmds, {variables, read, address+2, errors}, "")
+
+    i_assembly = "#{from_code}STORE #{i_addr}\n"
+
+    skip = Labels.get_label()
+    start = Labels.get_label()
+
+    assembly = "#{i_assembly}#{to_code}INC\nSUB #{i_addr}\nSTORE #{end_addr}\n!#{start}!LOAD #{end_addr}\nJZERO #{skip}\nDEC\nSTORE #{end_addr}\n#{code_assembly}LOAD #{i_addr}\nINC\nSTORE #{i_addr}\nJUMP #{start}\n!#{skip}!"
 
     {assembly, {variables, read_only, address, errors}}
   end
@@ -193,7 +212,7 @@ defmodule Compiler.Code do
     {to_code, {variables, read_only, address, errors}} = parse_expression(to, state, line)
 
     i_addr = address
-    iter_addr = address+1
+    end_addr = address+1
     read = Map.put(read_only, name, {:var, 1, i_addr})
 
     {_, code_assembly, errors} = gen_assembly(cmds, {variables, read, address+2, errors}, "")
@@ -203,7 +222,9 @@ defmodule Compiler.Code do
     skip = Labels.get_label()
     start = Labels.get_label()
 
-    assembly = "#{to_code}STORE 9\n#{i_assembly}INC\nSUB 9\nSTORE #{iter_addr}\n!#{start}!LOAD #{iter_addr}\nJZERO #{skip}\nDEC\nSTORE #{iter_addr}\n#{code_assembly}LOAD #{i_addr}\nDEC\nSTORE #{i_addr}\nJUMP #{start}\n!#{skip}!"
+#    assembly = "#{to_code}STORE 9\n#{i_assembly}INC\nSUB 9\nSTORE #{end_addr}\n!#{start}!LOAD #{end_addr}\nJZERO #{skip}\nDEC\nSTORE #{end_addr}\n#{code_assembly}LOAD #{i_addr}\nDEC\nSTORE #{i_addr}\nJUMP #{start}\n!#{skip}!"
+
+    assembly = "#{to_code}STORE #{end_addr}\n#{i_assembly}!#{start}!SUB #{end_addr}\nJZERO #{skip}\n#{code_assembly}LOAD #{i_addr}\nDEC\nSTORE #{i_addr}\nJUMP #{start}\n!#{skip}!#{code_assembly}"
 
     {assembly, {variables, read_only, address, errors}}
   end
@@ -535,6 +556,33 @@ defmodule Compiler.Code do
         {"#{store_code}#{power_code}#{assembly}", state}
     end
   end
+
+#  def parse_expression({:divide, dividend, divider}, {variables, read_only, address, errors} = state, line) do
+#    {dividend_code, state} = parse_expression(dividend, state, line)
+#    {divider_code, state} = parse_expression(divider, state, line)
+#
+#    # Euclidean division
+#    # r - 6
+#    # q - 7
+#    # n - 8
+#    # aux - 9
+#    # http://compoasso.free.fr/primelistweb/page/prime/euclide_en.php
+#
+#    power_start = Labels.get_label()
+#    power_end = Labels.get_label()
+#    finish = Labels.get_label()
+#    qpp = Labels.get_label()
+#    skip_qpp = Labels.get_label()
+#    skip_q_shr = Labels.get_label()
+#    start = Labels.get_label()
+#
+#    store_code = "ZERO\nSTORE 7\nSTORE 8\n#{divider_code}JZERO #{finish}\nSTORE 9\n#{dividend_code}STORE 6\n"
+#    power_code = "!#{power_start}!INC\nSUB 9\nJZERO #{power_end}\nLOAD 9\nSHL\nSTORE 9\nLOAD 8\nINC\nSTORE 8\nLOAD 6\nJUMP #{power_start}\n!#{power_end}!"
+#    assembly = "!#{start}!LOAD 8\nJZERO #{finish}\nDEC\nSTORE 8\nLOAD 9\nSHR\nSTORE 9\nLOAD 6\nINC\nSUB 9\nJZERO #{skip_qpp}\nDEC\nSTORE 6\nLOAD 7\nSHL\nINC\nSTORE 7\nJUMP #{skip_q_shr}\n!#{skip_qpp}!LOAD 7\nSHL\nSTORE 7\n!#{skip_q_shr}!JUMP #{start}\n!#{finish}!LOAD 7\n"
+#
+#    {"#{store_code}#{power_code}#{assembly}", state}
+#
+#  end
 
   def parse_expression({:divide, dividend, divider}, {variables, read_only, address, errors} = state, line) do
     {dividend_code, state} = parse_expression(dividend, state, line)
