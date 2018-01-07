@@ -1,0 +1,585 @@
+warning: function parse_number_test/1 is unused
+  lib/compiler/code.ex:739
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:5
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:5
+
+warning: variable "state" is unused
+  lib/compiler/code.ex:5
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:5
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:12
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:12
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:12
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:12
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:17
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:17
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:17
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:17
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:67
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:67
+
+warning: variable "line" is unused
+  lib/compiler/code.ex:67
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:67
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:67
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:89
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:89
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:89
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:89
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:93
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:93
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:93
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:93
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:97
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:97
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:97
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:97
+
+warning: variable "cmds" is unused
+  lib/compiler/code.ex:103
+
+warning: variable "dir" is unused
+  lib/compiler/code.ex:103
+
+warning: variable "from" is unused
+  lib/compiler/code.ex:103
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:103
+
+warning: variable "state" is unused
+  lib/compiler/code.ex:103
+
+warning: variable "to" is unused
+  lib/compiler/code.ex:103
+
+warning: variable "line" is unused
+  lib/compiler/code.ex:108
+
+warning: variable "state" is unused
+  lib/compiler/code.ex:108
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:129
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:129
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:129
+
+warning: variable "to_name" is unused
+  lib/compiler/code.ex:129
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:129
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:149
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:149
+
+warning: variable "from_name" is unused
+  lib/compiler/code.ex:149
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:149
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:149
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:167
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:167
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:167
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:167
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:189
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:189
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:189
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:189
+
+warning: this clause cannot match because a previous clause at line 167 always matches
+  lib/compiler/code.ex:189
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:209
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:209
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:209
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:209
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:231
+
+warning: variable "line" is unused
+  lib/compiler/code.ex:231
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:241
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:241
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:241
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:241
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:241
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:245
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:245
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:262
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:262
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:279
+
+warning: variable "line" is unused
+  lib/compiler/code.ex:279
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:289
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:289
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:289
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:289
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:289
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:293
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:293
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:310
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:310
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:328
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:347
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:365
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:365
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:365
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:365
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:366
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:366
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:366
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:366
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:369
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:369
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:369
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:369
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:370
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:370
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:370
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:370
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:377
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:377
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:377
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:377
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:387
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:387
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:387
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:387
+
+warning: variable "line" is unused
+  lib/compiler/code.ex:398
+
+warning: variable "line" is unused
+  lib/compiler/code.ex:402
+
+warning: variable "state" is unused
+  lib/compiler/code.ex:408
+
+warning: variable "state" is unused
+  lib/compiler/code.ex:413
+
+warning: variable "line" is unused
+  lib/compiler/code.ex:417
+
+warning: variable "state" is unused
+  lib/compiler/code.ex:417
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:426
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:426
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:426
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:426
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:426
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:432
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:432
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:432
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:432
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:432
+
+warning: variable "line" is unused
+  lib/compiler/code.ex:438
+
+warning: variable "state" is unused
+  lib/compiler/code.ex:438
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:443
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:443
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:443
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:443
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:450
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:450
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:450
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:450
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:450
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:456
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:456
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:456
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:456
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:456
+
+warning: variable "line" is unused
+  lib/compiler/code.ex:462
+
+warning: variable "state" is unused
+  lib/compiler/code.ex:462
+
+warning: variable "state" is unused
+  lib/compiler/code.ex:467
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:471
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:471
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:471
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:471
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:471
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:477
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:477
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:477
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:477
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:503
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:503
+
+warning: variable "line" is unused
+  lib/compiler/code.ex:503
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:503
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:503
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:512
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:512
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:512
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:512
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:535
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:535
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:535
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:535
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:586
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:586
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:586
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:586
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:615
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:615
+
+warning: variable "line" is unused
+  lib/compiler/code.ex:615
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:615
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:615
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:624
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:624
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:624
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:624
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:649
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:649
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:649
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:649
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:674
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:674
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:674
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:674
+
+warning: variable "state" is unused
+  lib/compiler/code.ex:694
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:704
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:704
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:704
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:704
+
+warning: variable "size" is unused
+  lib/compiler/code.ex:704
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:704
+
+warning: variable "state" is unused
+  lib/compiler/code.ex:725
+

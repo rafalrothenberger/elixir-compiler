@@ -1,4 +1,4 @@
-Nonterminals input declarations declaration code cmd variable value expression condition.
+Nonterminals input declarations declaration code cmd variable value expression condition error.
 Terminals VAR BEGIN END READ WRITE IF THEN ELSE ENDIF WHILE DO ENDWHILE FOR FROM DOWNTO TO ENDFOR'\n' identifier number '[' ']' ' ' ':=' ';' '+' '-' '*' '/' '%' '=' '<' '>' '<=' '>=' '<>'.
 Rootsymbol input.
 

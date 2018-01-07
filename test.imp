@@ -1,28 +1,8 @@
-( Rozklad liczby na czynniki pierwsze )
+
 VAR
-    n m reszta potega dzielnik
+    c
 BEGIN
-    READ n;
-    dzielnik := 2;
-    m := dzielnik * dzielnik;
-    WHILE n >= m DO
-        potega := 0;
-        reszta := n % dzielnik;
-        WHILE reszta = 0 DO
-            n := n / dzielnik;
-            potega := potega + 1;
-            reszta := n % dzielnik;
-        ENDWHILE
-        IF potega > 0 THEN ( czy znaleziono dzielnik )
-            WRITE dzielnik;
-            WRITE potega;
-        ELSE
-            dzielnik := dzielnik + 1;
-            m := dzielnik * dzielnik;
-        ENDIF
-    ENDWHILE
-    IF n <> 1 THEN ( ostatni dzielnik )
-        WRITE n;
-        WRITE 1;
-    ENDIF
+    c := 12371283761289376128931237128376128937612893123712837612893761289312371283761289376128931237128376128937612893
+     * 12371283761289376128931237128376128937612893123712837612893761289312371283761289376128931237128376128937612893;
+    WRITE c;
 END

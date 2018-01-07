@@ -1,0 +1,2738 @@
+warning: function parse_number_test/1 is unused
+  lib/compiler/code.ex:879
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:12
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:12
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:12
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:12
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:17
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:17
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:17
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:17
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:67
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:67
+
+warning: variable "line" is unused
+  lib/compiler/code.ex:67
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:67
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:67
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:89
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:89
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:89
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:89
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:93
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:93
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:93
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:93
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:97
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:97
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:97
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:97
+
+warning: variable "cmds" is unused
+  lib/compiler/code.ex:103
+
+warning: variable "dir" is unused
+  lib/compiler/code.ex:103
+
+warning: variable "from" is unused
+  lib/compiler/code.ex:103
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:103
+
+warning: variable "state" is unused
+  lib/compiler/code.ex:103
+
+warning: variable "to" is unused
+  lib/compiler/code.ex:103
+
+warning: variable "line" is unused
+  lib/compiler/code.ex:108
+
+warning: variable "state" is unused
+  lib/compiler/code.ex:108
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:129
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:129
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:129
+
+warning: variable "to_name" is unused
+  lib/compiler/code.ex:129
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:129
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:149
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:149
+
+warning: variable "from_name" is unused
+  lib/compiler/code.ex:149
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:149
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:149
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:167
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:167
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:167
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:167
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:189
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:189
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:189
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:189
+
+warning: this clause cannot match because a previous clause at line 167 always matches
+  lib/compiler/code.ex:189
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:209
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:209
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:209
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:209
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:232
+
+warning: variable "line" is unused
+  lib/compiler/code.ex:232
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:242
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:242
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:242
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:242
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:242
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:246
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:246
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:262
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:262
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:279
+
+warning: variable "line" is unused
+  lib/compiler/code.ex:279
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:289
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:289
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:289
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:289
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:289
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:293
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:293
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:310
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:310
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:327
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:345
+
+warning: this clause cannot match because a previous clause at line 327 always matches
+  lib/compiler/code.ex:345
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:366
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:387
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:406
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:406
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:406
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:406
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:407
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:407
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:407
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:407
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:410
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:410
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:410
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:410
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:411
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:411
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:411
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:411
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:414
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:418
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:418
+
+warning: variable "i" is unused
+  lib/compiler/code.ex:418
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:418
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:418
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:423
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:423
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:423
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:423
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:434
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:434
+
+warning: variable "i" is unused
+  lib/compiler/code.ex:434
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:434
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:434
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:440
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:440
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:440
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:440
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:441
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:441
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:441
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:441
+
+warning: variable "line" is unused
+  lib/compiler/code.ex:446
+
+warning: variable "line" is unused
+  lib/compiler/code.ex:450
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:455
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:455
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:455
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:455
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:460
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:460
+
+warning: variable "i" is unused
+  lib/compiler/code.ex:460
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:460
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:460
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:465
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:465
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:465
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:465
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:470
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:470
+
+warning: variable "line" is unused
+  lib/compiler/code.ex:470
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:470
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:470
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:479
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:479
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:479
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:479
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:479
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:485
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:485
+
+warning: variable "i" is unused
+  lib/compiler/code.ex:485
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:485
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:485
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:485
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:491
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:491
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:491
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:491
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:491
+
+warning: variable "line" is unused
+  lib/compiler/code.ex:497
+
+warning: variable "state" is unused
+  lib/compiler/code.ex:497
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:502
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:502
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:502
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:502
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:509
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:509
+
+warning: variable "i" is unused
+  lib/compiler/code.ex:509
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:509
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:509
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:509
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:515
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:515
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:515
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:515
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:515
+
+warning: variable "line" is unused
+  lib/compiler/code.ex:529
+
+warning: variable "state" is unused
+  lib/compiler/code.ex:529
+
+warning: variable "state" is unused
+  lib/compiler/code.ex:555
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:559
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:559
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:559
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:559
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:559
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:565
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:565
+
+warning: variable "i" is unused
+  lib/compiler/code.ex:565
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:565
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:565
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:565
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:571
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:571
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:571
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:571
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:601
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:601
+
+warning: variable "line" is unused
+  lib/compiler/code.ex:601
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:601
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:601
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:610
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:610
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:610
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:610
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:634
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:634
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:634
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:634
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:686
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:686
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:686
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:686
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:716
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:716
+
+warning: variable "line" is unused
+  lib/compiler/code.ex:716
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:716
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:716
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:725
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:725
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:725
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:725
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:750
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:750
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:750
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:750
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:775
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:775
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:775
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:775
+
+warning: variable "state" is unused
+  lib/compiler/code.ex:795
+
+warning: variable "state" is unused
+  lib/compiler/code.ex:813
+
+warning: variable "address" is unused
+  lib/compiler/code.ex:823
+
+warning: variable "errors" is unused
+  lib/compiler/code.ex:823
+
+warning: variable "name" is unused
+  lib/compiler/code.ex:823
+
+warning: variable "read_only" is unused
+  lib/compiler/code.ex:823
+
+warning: variable "size" is unused
+  lib/compiler/code.ex:823
+
+warning: variable "variables" is unused
+  lib/compiler/code.ex:823
+
+warning: variable "state" is unused
+  lib/compiler/code.ex:861
+
+1018 vs 2315
+ZERO
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+
+-----------------
+ZERO
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+SHL
+INC
+SHL
+SHL
+INC
+SHL
+INC
+SHL
+INC
+SHL
+SHL
+INC
+STORE 5
+ZERO
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+SHL
+DEC
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+ADD 5
+SHL
+SHL
+ADD 5
+

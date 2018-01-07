@@ -2,7 +2,7 @@ defmodule Compiler.Code do
   @moduledoc false
   alias Compiler.Labels, as: Labels
 
-  def gen_assembly([], {variables, read_only, address, errors} = state, assembly) do
+  def gen_assembly([], {_variables, _read_only, _address, errors} = _state, assembly) do
     case errors do
       [] -> {:ok, assembly, errors}
       _ -> {:error, "", errors}
@@ -72,7 +72,6 @@ defmodule Compiler.Code do
     cond do
       Map.has_key?(read_only, name) or Map.has_key?(variables, name) ->
         var = Map.get_lazy(read_only, name, fn -> Map.get(variables, name) end)
-        IO.inspect(var)
         {var_type, _var_size, _var_mem_addr} = var
         if (var_type == type) do
           put({target, var}, state, line)
@@ -217,14 +216,15 @@ defmodule Compiler.Code do
 
     {_, code_assembly, errors} = gen_assembly(cmds, {variables, read, address+2, errors}, "")
 
-    i_assembly = "#{from_code}STORE #{i_addr}\n"
-
     skip = Labels.get_label()
     start = Labels.get_label()
+    full_skip = Labels.get_label()
 
 #    assembly = "#{to_code}STORE 9\n#{i_assembly}INC\nSUB 9\nSTORE #{end_addr}\n!#{start}!LOAD #{end_addr}\nJZERO #{skip}\nDEC\nSTORE #{end_addr}\n#{code_assembly}LOAD #{i_addr}\nDEC\nSTORE #{i_addr}\nJUMP #{start}\n!#{skip}!"
 
-    assembly = "#{to_code}STORE #{end_addr}\n#{i_assembly}!#{start}!SUB #{end_addr}\nJZERO #{skip}\n#{code_assembly}LOAD #{i_addr}\nDEC\nSTORE #{i_addr}\nJUMP #{start}\n!#{skip}!#{code_assembly}"
+    i_assembly = "#{from_code}STORE #{i_addr}\n"
+    store_code = "#{to_code}STORE #{end_addr}\n#{i_assembly}SUB #{end_addr}\nJZERO #{full_skip}\nLOAD #{i_addr}\n"
+    assembly = "#{store_code}!#{start}!SUB #{end_addr}\nJZERO #{skip}\n#{code_assembly}LOAD #{i_addr}\nDEC\nSTORE #{i_addr}\nJUMP #{start}\n!#{skip}!#{code_assembly}!#{full_skip}!"
 
     {assembly, {variables, read_only, address, errors}}
   end
@@ -254,10 +254,9 @@ defmodule Compiler.Code do
     case else_cmds do
       [] -> {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
       _ ->
-        {_, else_assembly, errors} = gen_assembly(else_cmds, state, "")
+        {_, else_assembly, errors} = gen_assembly(else_cmds, {variables, read_only, address, errors}, "")
         {"#{code}#{assembly}JUMP #{skip}\n!#{go_else}!#{else_assembly}!#{skip}!", {variables, read_only, address, errors}}
     end
-    #    {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
   end
 
   defp parse_condition({{:equals, {:array, name, _ops} = var, value}, if_cmds, else_cmds}, {variables, read_only, address, errors} = state, line) do
@@ -271,7 +270,7 @@ defmodule Compiler.Code do
     case else_cmds do
       [] -> {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
       _ ->
-        {_, else_assembly, errors} = gen_assembly(else_cmds, state, "")
+        {_, else_assembly, errors} = gen_assembly(else_cmds, {variables, read_only, address, errors}, "")
         {"#{code}#{assembly}JUMP #{skip}\n!#{go_else}!#{else_assembly}!#{skip}!", {variables, read_only, address, errors}}
     end
     #    {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
@@ -302,7 +301,7 @@ defmodule Compiler.Code do
     case else_cmds do
       [] -> {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
       _ ->
-        {_, else_assembly, errors} = gen_assembly(else_cmds, state, "")
+        {_, else_assembly, errors} = gen_assembly(else_cmds, {variables, read_only, address, errors}, "")
         {"#{code}#{assembly}JUMP #{skip}\n!#{go_else}!#{else_assembly}!#{skip}!", {variables, read_only, address, errors}}
     end
     #    {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
@@ -319,32 +318,72 @@ defmodule Compiler.Code do
     case else_cmds do
       [] -> {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
       _ ->
-        {_, else_assembly, errors} = gen_assembly(else_cmds, state, "")
+        {_, else_assembly, errors} = gen_assembly(else_cmds, {variables, read_only, address, errors}, "")
         {"#{code}#{assembly}JUMP #{skip}\n!#{go_else}!#{else_assembly}!#{skip}!", {variables, read_only, address, errors}}
     end
     #    {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
   end
 
+  defp parse_condition({{:l, {:var, _name, {}} = left, right}, if_cmds, else_cmds}, {variables, read_only, address, errors} = state, line) do
+    {mem_addr, state} = get_mem_addr(left, state, line)
+    {right_code, state} = parse_expression(right, state, line)
+
+    go_else = Labels.get_label()
+    #    start = Labels.get_label()
+    skip = Labels.get_label()
+
+    code = "#{right_code}SUB #{mem_addr}\nJZERO #{go_else}\n"
+    {_, assembly, errors} = gen_assembly(if_cmds, state, "")
+    case else_cmds do
+      [] -> {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
+      _ ->
+        {_, else_assembly, errors} = gen_assembly(else_cmds, {variables, read_only, address, errors}, "")
+        {"#{code}#{assembly}JUMP #{skip}\n!#{go_else}!#{else_assembly}!#{skip}!", {variables, read_only, address, errors}}
+    end
+  end
+
+  defp parse_condition({{:l, {:var, _name, {}} = left, right}, if_cmds, else_cmds}, {variables, read_only, address, errors} = state, line) do
+    {mem_addr, state} = get_mem_addr(left, state, line)
+    {right_code, state} = parse_expression(right, state, line)
+
+    go_else = Labels.get_label()
+    #    start = Labels.get_label()
+    skip = Labels.get_label()
+
+    code = "#{right_code}SUB #{mem_addr}\nJZERO #{go_else}\n"
+    {_, assembly, errors} = gen_assembly(if_cmds, state, "")
+    case else_cmds do
+      [] -> {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
+      _ ->
+        {_, else_assembly, errors} = gen_assembly(else_cmds, {variables, read_only, address, errors}, "")
+        {"#{code}#{assembly}JUMP #{skip}\n!#{go_else}!#{else_assembly}!#{skip}!", {variables, read_only, address, errors}}
+    end
+  end
+
   # left < right
+  # 0 < right - left
+  # dla false: 0 >= right - left
   defp parse_condition({{:l, left, right}, if_cmds, else_cmds}, {variables, read_only, address, errors} = state, line) do
     {left_code, state} = parse_expression(left, state, line)
     {right_code, state} = parse_expression(right, state, line)
 
     go_else = Labels.get_label()
-    start = Labels.get_label()
+#    start = Labels.get_label()
     skip = Labels.get_label()
 
-    code = "#{right_code}STORE 9\n#{left_code}INC\nSUB 9\nJZERO #{start}\nJUMP #{go_else}\n!#{start}!"
+    code = "#{left_code}STORE 9\n#{right_code}SUB 9\nJZERO #{go_else}\n"
     {_, assembly, errors} = gen_assembly(if_cmds, state, "")
     case else_cmds do
       [] -> {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
       _ ->
-        {_, else_assembly, errors} = gen_assembly(else_cmds, state, "")
+        {_, else_assembly, errors} = gen_assembly(else_cmds, {variables, read_only, address, errors}, "")
         {"#{code}#{assembly}JUMP #{skip}\n!#{go_else}!#{else_assembly}!#{skip}!", {variables, read_only, address, errors}}
     end
   end
 
   # left <= right
+  # left - right <= 0
+  #
   defp parse_condition({{:le, left, right}, if_cmds, else_cmds}, {variables, read_only, address, errors} = state, line) do
     {left_code, state} = parse_expression(left, state, line)
     {right_code, state} = parse_expression(right, state, line)
@@ -353,12 +392,13 @@ defmodule Compiler.Code do
     start = Labels.get_label()
     skip = Labels.get_label()
 
+#    code = "#{right_code}STORE 9\n#{left_code}SUB 9\nJZERO #{start}\nJUMP #{go_else}\n!#{start}!"
     code = "#{right_code}STORE 9\n#{left_code}SUB 9\nJZERO #{start}\nJUMP #{go_else}\n!#{start}!"
     {_, assembly, errors} = gen_assembly(if_cmds, state, "")
     case else_cmds do
       [] -> {"#{code}#{assembly}!#{go_else}!", {variables, read_only, address, errors}}
       _ ->
-        {_, else_assembly, errors} = gen_assembly(else_cmds, state, "")
+        {_, else_assembly, errors} = gen_assembly(else_cmds, {variables, read_only, address, errors}, "")
         {"#{code}#{assembly}JUMP #{skip}\n!#{go_else}!#{else_assembly}!#{skip}!", {variables, read_only, address, errors}}
     end
   end
@@ -371,7 +411,12 @@ defmodule Compiler.Code do
     parse_condition({{:le, right, left}, if_cmds, else_cmds}, {variables, read_only, address, errors} = state, line)
   end
 
-  defp put({{:var, _name, {}}, {_type, _size, mem_addr}}, state, _line) do
+  defp put({{:var, name, {}}, {_type, _size, mem_addr}}, state, _line) do
+    {"LOAD #{mem_addr}\nPUT\n", state}
+  end
+
+  defp put({{:array, _name, {:number, i}}, {_type, _size, _mem_addr}} = var, {variables, read_only, address, errors} = state, line) do
+    {mem_addr, state} = calc_arr_mem_addr_i(var, state, line)
     {"LOAD #{mem_addr}\nPUT\n", state}
   end
 
@@ -380,21 +425,23 @@ defmodule Compiler.Code do
     {"#{assembly}STORE 0\nLOADI 0\nPUT\n",state}
   end
 
-  defp assign({{:var, _name, {}}, {_type, _size, mem_addr}}, expression, state, line) do
+  defp assign({{:var, name, {}}, {_type, _size, mem_addr}}, expression, state, line) do
     {expression_code, {variables, read_only, address, errors}} = parse_expression(expression, state, line)
+    Compiler.Initialized.initialize(name)
     {"#{expression_code}STORE #{mem_addr}\n", {variables, read_only, address, errors}}
   end
 
-  defp assign({{:array, _name, _ops}, {_type, _size, _mem_addr}} = var, expression, {variables, read_only, address, errors} = state, line) do
-    {assembly, state} = calc_arr_mem_addr(var, state, line)
+  defp assign({{:array, _name, {:number, i}}, {_type, _size, _mem_addr}} = var, expression, {variables, read_only, address, errors} = state, line) do
+    {mem_addr, state} = calc_arr_mem_addr_i(var, state, line)
     {expression_code, {variables, read_only, address, errors}} = parse_expression(expression, state, line)
-    {"#{assembly}STORE 0\n#{expression_code}STOREI 0\n",{variables, read_only, address, errors}}
+    {"#{expression_code}STORE #{mem_addr}\n",{variables, read_only, address, errors}}
   end
 
-#  defp assign({{:array, _name, {:var, _v}}, {_type, _size, _mem_addr}} = var, expression, {variables, read_only, address, errors} = state, line) do
-#    {assembly, state} = calc_arr_mem_addr(var, state, line)
-#    {"#{assembly}STORE 0\n#{expression_code}STOREI 0\n",state}
-#  end
+  defp assign({{:array, _name, _ops}, {_type, _size, _mem_addr}} = var, expression, {variables, read_only, address, errors} = state, line) do
+    {expression_code, {variables, read_only, address, errors}} = parse_expression(expression, state, line)
+    {assembly, state} = calc_arr_mem_addr(var, state, line)
+    {"#{assembly}STORE 0\n#{expression_code}STOREI 0\n",state}
+  end
 
   def parse_expression(code, {variables, read_only, address, errors}, line) when is_binary(code) do
     {code, {variables, read_only, address, errors}}
@@ -407,17 +454,22 @@ defmodule Compiler.Code do
 
   def parse_expression({:var, _name, {}} = var, {variables, read_only, address, errors} = state, line) do
     {mem_addr, state} = get_mem_addr(var, state, line)
-    {"LOAD #{mem_addr}\n", {variables, read_only, address, errors}}
+    {"LOAD #{mem_addr}\n", state}
+  end
+
+  def parse_expression({:array, _name, {:number, i}} = var, {variables, read_only, address, errors} = state, line) do
+    {mem_addr, state} = get_arr_mem_addr_i(var, state, line)
+    {"LOAD #{mem_addr}\n", state}
   end
 
   def parse_expression({:array, _name, _ops} = var, {variables, read_only, address, errors} = state, line) do
     {assembly, state} = get_arr_mem_addr(var, state, line)
-    {"#{assembly}STORE 1\nLOADI 1\n", {variables, read_only, address, errors}}
+    {"#{assembly}STORE 1\nLOADI 1\n", state}
   end
 
   def parse_expression({:add, {:number, {a}}, {:number, {b}}}, {variables, read_only, address, errors} = state, line) do
     assembly = parse_number(a+b)
-    {assembly, {variables, read_only, address, errors}}
+    {assembly, state}
   end
 
   def parse_expression({:add, {:number, {n}}, expression}, {variables, read_only, address, errors}, line) do
@@ -426,6 +478,12 @@ defmodule Compiler.Code do
 
   def parse_expression({:add, {:var, name, {}} = var, expression}, {variables, read_only, address, errors} = state, line) do
     {mem_addr, state} = get_mem_addr(var, state, line)
+    {expression_code, {variables, read_only, address, errors}} = parse_expression(expression, state, line)
+    {"#{expression_code}ADD #{mem_addr}\n",{variables, read_only, address, errors}}
+  end
+
+  def parse_expression({:add, {:array, name, {:number, i}} = var, expression}, {variables, read_only, address, errors} = state, line) do
+    {mem_addr, state} = get_arr_mem_addr(var, state, line)
     {expression_code, {variables, read_only, address, errors}} = parse_expression(expression, state, line)
     {"#{expression_code}ADD #{mem_addr}\n",{variables, read_only, address, errors}}
   end
@@ -448,8 +506,8 @@ defmodule Compiler.Code do
     {"#{number_assembly}STORE 9\n#{expression_code}SUB 9\n",{variables, read_only, address, errors}}
   end
 
-  def parse_expression({:sub, expression, {:var, name, {}} = var}, {variables, read_only, address, errors} = state, line) do
-    {mem_addr, state} = get_mem_addr(var, state, line)
+  def parse_expression({:add, {:array, name, {:number, i}} = var, expression}, {variables, read_only, address, errors} = state, line) do
+    {mem_addr, state} = get_arr_mem_addr(var, state, line)
     {expression_code, {variables, read_only, address, errors}} = parse_expression(expression, state, line)
     {"#{expression_code}SUB #{mem_addr}\n",{variables, read_only, address, errors}}
   end
@@ -460,20 +518,34 @@ defmodule Compiler.Code do
     {"#{array_code}STORE 2\n#{expression_code}SUBI 2\n", {variables, read_only, address, errors}}
   end
 
-    def parse_expression({:multiply, {:number, {a}}, {:number, {b}}}, {variables, read_only, address, errors} = state, line) do
-      assembly = parse_number(a*b)
-      {assembly, {variables, read_only, address, errors}}
-    end
+  def parse_expression({:sub, left, right}, state, line) do
+    {left_code, state} = parse_expression(left, state, line)
+    {right_code, state} = parse_expression(right, state, line)
 
-    def parse_expression({:multiply, expression, {:number, {n}}}, {variables, read_only, address, errors} = state, line) do
-      parse_expression({:multiply, {:number, {n}}, expression}, {variables, read_only, address, errors}, line)
-    end
+    {"#{right_code}STORE 9\n#{left_code}SUB 9\n", state}
 
-    def parse_expression({:multiply, {:number, {n}}, {:var, name, {}} = var}, {variables, read_only, address, errors} = state, line) do
-      {mem_addr, {variables, read_only, address, errors}} = get_mem_addr(var, state, line)
-      assembly = parse_number(n, "ADD #{mem_addr}\n")
-      {assembly, {variables, read_only, address, errors}}
-    end
+  end
+
+  def parse_expression({:multiply, {:number, {a}}, {:number, {b}}}, {variables, read_only, address, errors} = state, line) do
+    assembly = parse_number(a*b)
+    {assembly, {variables, read_only, address, errors}}
+  end
+
+  def parse_expression({:multiply, expression, {:number, {n}}}, {variables, read_only, address, errors} = state, line) do
+    parse_expression({:multiply, {:number, {n}}, expression}, {variables, read_only, address, errors}, line)
+  end
+
+  def parse_expression({:multiply, {:number, {n}}, {:var, name, {}} = var}, {variables, read_only, address, errors} = state, line) do
+    {mem_addr, {variables, read_only, address, errors}} = get_mem_addr(var, state, line)
+    assembly = parse_number(n, "ADD #{mem_addr}\n")
+    {assembly, {variables, read_only, address, errors}}
+  end
+
+  def parse_expression({:multiply, {:number, {n}}, {:array, name, {:number, i}} = var}, {variables, read_only, address, errors} = state, line) do
+    {mem_addr, {variables, read_only, address, errors}} = get_arr_mem_addr_i(var, state, line)
+    assembly = parse_number(n, "ADD #{mem_addr}\n")
+    {assembly, {variables, read_only, address, errors}}
+  end
 
   def parse_expression({:multiply, left, right}, {variables, read_only, address, errors} = state, line) do
     {left_code, state} = parse_expression(left, state, line)
@@ -483,9 +555,13 @@ defmodule Compiler.Code do
     add_skip = Labels.get_label()
     add = Labels.get_label()
     start = Labels.get_label()
+    check_skip = Labels.get_label()
+
+    check = "STORE 7\nSUB 8\nJZERO #{check_skip}\nLOAD 7\nSTORE 5\nLOAD 8\nSTORE 7\nLOAD 5\nSTORE 8\n!#{check_skip}!LOAD 7\n"
+
 
     store_code = "ZERO\nSTORE 9\n#{left_code}STORE 8\n#{right_code}"
-    assembly = "#{store_code}!#{start}!STORE 7\nJZERO #{skip}\nJODD #{add}\nJUMP #{add_skip}\n!#{add}!LOAD 9\nADD 8\nSTORE 9\n!#{add_skip}!LOAD 8\nSHL\nSTORE 8\nLOAD 7\nSHR\nJUMP #{start}\n!#{skip}!LOAD 9\n"
+    assembly = "#{store_code}#{check}!#{start}!STORE 7\nJZERO #{skip}\nJODD #{add}\nJUMP #{add_skip}\n!#{add}!LOAD 9\nADD 8\nSTORE 9\n!#{add_skip}!LOAD 8\nSHL\nSTORE 8\nLOAD 7\nSHR\nJUMP #{start}\n!#{skip}!LOAD 9\n"
 
     {assembly, state}
   end
@@ -521,13 +597,14 @@ defmodule Compiler.Code do
         shr = Labels.get_label()
         out = Labels.get_label()
         power = Labels.get_label()
+        full_out = Labels.get_label()
 
-        store_code = "#{divider_code}JZERO #{out}\nSTORE 7\nZERO\nSTORE 9\nINC\nSTORE 6\n#{dividend_code}STORE 8\n"
+        store_code = "ZERO\nSTORE 9\nINC\nSTORE 6\n#{divider_code}JZERO #{full_out}\nSTORE 7\n#{dividend_code}STORE 8\n"
 
 
         power_code = "!#{power}!INC\nSUB 7\nJZERO #{shr}\nDEC\nJZERO #{out}\nLOAD 7\nSHL\nSTORE 7\nLOAD 6\nSHL\nSTORE 6\nLOAD 8\nJUMP #{power}\n!#{shr}!"
 
-        assembly = "LOAD 6\nSHR\nSTORE 6\nJZERO #{out}\nLOAD 7\nSHR\nSTORE 7\nLOAD 8\nINC\nSUB 7\nJZERO #{shr}\nDEC\nSTORE 8\nLOAD 6\nADD 9\nSTORE 9\nJUMP #{shr}\n!#{out}!LOAD 9\nADD 6\n"
+        assembly = "LOAD 6\nSHR\nSTORE 6\nJZERO #{out}\nLOAD 7\nSHR\nSTORE 7\nLOAD 8\nINC\nSUB 7\nJZERO #{shr}\nDEC\nSTORE 8\nLOAD 6\nADD 9\nSTORE 9\nJUMP #{shr}\n!#{out}!LOAD 9\nADD 6\n!#{full_out}!"
 
         {"#{store_code}#{power_code}#{assembly}", state}
     end
@@ -545,13 +622,14 @@ defmodule Compiler.Code do
         shr = Labels.get_label()
         out = Labels.get_label()
         power = Labels.get_label()
+        full_out = Labels.get_label()
 
-        store_code = "#{divider_code}JZERO #{out}\nSTORE 7\nZERO\nSTORE 9\nINC\nSTORE 6\n#{dividend_code}STORE 8\n"
+        store_code = "ZERO\nSTORE 9\nINC\nSTORE 6\n#{divider_code}JZERO #{full_out}\nSTORE 7\n#{dividend_code}STORE 8\n"
 
 
         power_code = "!#{power}!INC\nSUB 7\nJZERO #{shr}\nDEC\nJZERO #{out}\nLOAD 7\nSHL\nSTORE 7\nLOAD 6\nSHL\nSTORE 6\nLOAD 8\nJUMP #{power}\n!#{shr}!"
 
-        assembly = "LOAD 6\nSHR\nSTORE 6\nJZERO #{out}\nLOAD 7\nSHR\nSTORE 7\nLOAD 8\nINC\nSUB 7\nJZERO #{shr}\nDEC\nSTORE 8\nLOAD 6\nADD 9\nSTORE 9\nJUMP #{shr}\n!#{out}!LOAD 9\nADD 6\n"
+        assembly = "LOAD 6\nSHR\nSTORE 6\nJZERO #{out}\nLOAD 7\nSHR\nSTORE 7\nLOAD 8\nINC\nSUB 7\nJZERO #{shr}\nDEC\nSTORE 8\nLOAD 6\nADD 9\nSTORE 9\nJUMP #{shr}\n!#{out}!LOAD 9\nADD 6\n!#{full_out}!"
 
         {"#{store_code}#{power_code}#{assembly}", state}
     end
@@ -591,13 +669,14 @@ defmodule Compiler.Code do
     shr = Labels.get_label()
     out = Labels.get_label()
     power = Labels.get_label()
+    full_out = Labels.get_label()
 
-    store_code = "#{divider_code}JZERO #{out}\nSTORE 7\nZERO\nSTORE 9\nINC\nSTORE 6\n#{dividend_code}STORE 8\n"
+    store_code = "ZERO\nSTORE 9\nINC\nSTORE 6\n#{divider_code}JZERO #{full_out}\nSTORE 7\n#{dividend_code}STORE 8\n"
 
 
     power_code = "!#{power}!INC\nSUB 7\nJZERO #{shr}\nDEC\nJZERO #{out}\nLOAD 7\nSHL\nSTORE 7\nLOAD 6\nSHL\nSTORE 6\nLOAD 8\nJUMP #{power}\n!#{shr}!"
 
-    assembly = "LOAD 6\nSHR\nSTORE 6\nJZERO #{out}\nLOAD 7\nSHR\nSTORE 7\nLOAD 8\nINC\nSUB 7\nJZERO #{shr}\nDEC\nSTORE 8\nLOAD 6\nADD 9\nSTORE 9\nJUMP #{shr}\n!#{out}!LOAD 9\nADD 6\n"
+    assembly = "LOAD 6\nSHR\nSTORE 6\nJZERO #{out}\nLOAD 7\nSHR\nSTORE 7\nLOAD 8\nINC\nSUB 7\nJZERO #{shr}\nDEC\nSTORE 8\nLOAD 6\nADD 9\nSTORE 9\nJUMP #{shr}\n!#{out}!LOAD 9\nADD 6\n!#{full_out}!"
 
     {"#{store_code}#{power_code}#{assembly}", state}
 
@@ -692,6 +771,24 @@ defmodule Compiler.Code do
     {"#{store_code}#{power_code}#{assembly}", state}
   end
 
+  defp calc_arr_mem_addr_i({{:array, name, {:number, i}}, {_type, size, mem_addr}}, {variables, read_only, address, errors} = state, line) do
+    cond do
+      Map.has_key?(read_only, name) or Map.has_key?(variables, name) ->
+        {type, size, mem_addr} = Map.get_lazy(read_only, name, fn -> Map.get(variables, name) end)
+        if (type == :array) do
+          if (size > i) do
+            {mem_addr+i, {variables, read_only, address, errors}}
+          else
+            {"", {variables, read_only, address, [{:out_of_array_range, {name}, line} | errors]}}
+          end
+        else
+          {"", {variables, read_only, address, [{:accessing_var_as_array, {name}, line} | errors]}}
+        end
+      true ->
+        {"", {variables, read_only, address, [{:var_not_found, {name}, line} | errors]}}
+    end
+  end
+
   defp calc_arr_mem_addr({{:array, name, {:number, i}}, {_type, size, mem_addr}}, {variables, read_only, address, errors} = state, line) do
     if (i < size) do
       i = i+mem_addr
@@ -709,6 +806,7 @@ defmodule Compiler.Code do
   end
 
   defp get_arr_mem_addr({:array, name, _ops} = var, {variables, read_only, address, errors} = state, line) do
+    #  defp get_arr_mem_addr({:array, name, {:var, _var_name}} = var, {variables, read_only, address, errors} = state, line) do
     cond do
       Map.has_key?(read_only, name) or Map.has_key?(variables, name) ->
         arr = Map.get_lazy(read_only, name, fn -> Map.get(variables, name) end)
@@ -723,12 +821,32 @@ defmodule Compiler.Code do
     end
   end
 
+  defp get_arr_mem_addr_i({:array, name, _ops} = var, {variables, read_only, address, errors} = state, line) do
+    #  defp get_arr_mem_addr({:array, name, {:var, _var_name}} = var, {variables, read_only, address, errors} = state, line) do
+    cond do
+      Map.has_key?(read_only, name) or Map.has_key?(variables, name) ->
+        arr = Map.get_lazy(read_only, name, fn -> Map.get(variables, name) end)
+        {type, _size, _mem_addr} = arr
+        if (type == :array) do
+          calc_arr_mem_addr_i({var, arr}, state, line)
+        else
+          {"", {variables, read_only, address, [{:accessing_array_as_var, {name}, line} | errors]}}
+        end
+      true ->
+        {"", {variables, read_only, address, [{:var_not_found, {name}, line} | errors]}}
+    end
+  end
+
   defp get_mem_addr({:var, name, {}}, {variables, read_only, address, errors} = state, line) do
     cond do
       Map.has_key?(read_only, name) or Map.has_key?(variables, name) ->
         {type, _size, mem_addr} = Map.get_lazy(read_only, name, fn -> Map.get(variables, name) end)
         if (type == :var) do
-          {mem_addr, {variables, read_only, address, errors}}
+          if (Map.has_key?(read_only, name) || Compiler.Initialized.is_initialized?(name)) do
+            {mem_addr, {variables, read_only, address, errors}}
+          else
+            {"", {variables, read_only, address, [{:variable_not_initialized, {name}, line} | errors]}}
+          end
         else
           {"", {variables, read_only, address, [{:accessing_array_as_var, {name}, line} | errors]}}
         end
