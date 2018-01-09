@@ -6,7 +6,7 @@ line_number({_Token, Line}) -> Line.
 declaration_line_number({_Token, Line, _Value}) -> Line.
 get_identifier_name({_A, _B, Name}) -> Name.
 
--file("/usr/local/Cellar/erlang/20.2.2/lib/erlang/lib/parsetools-2.1.6/include/yeccpre.hrl", 0).
+-file("/usr/local/lib/erlang/lib/parsetools-2.1.6/include/yeccpre.hrl", 0).
 %%
 %% %CopyrightBegin%
 %%
