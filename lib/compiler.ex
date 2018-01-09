@@ -1,14 +1,14 @@
 defmodule Compiler do
 
   def main(args \\ []) do
-    IO.inspect("aaaaaaaaaaaa")
+    run(args)
   end
 
-  def run(in_filename) when is_binary(in_filename) do
-    run(in_filename, "a.out")
+  def run([in_filename]) when is_binary(in_filename) do
+    run([in_filename | ["a.out"]])
   end
 
-  def run(in_filename, out_filename) when is_binary(in_filename) and is_binary(out_filename) do
+  def run([in_filename, [out_filename]]) when is_binary(in_filename) and is_binary(out_filename) do
     Compiler.Labels.start_link()
     Compiler.Initialized.start_link()
     Compiler.Acumulator.start_link()
@@ -55,6 +55,10 @@ defmodule Compiler do
       {:error, {line_no, :compiler_lexer, {:user, command}}, lines_readed} ->
         IO.puts(:stderr, "Unknown command \"#{command}\" at line: #{line_no}\n\n")
     end
+  end
+
+  def run(_) do
+    IO.puts :stderr, "Wrong arguments, usage:\n\tcmplr in_name\n\tcmplr in_name out_name\ne.g.\n\tcmplr program2.imp"
   end
 
   defp clear_labels([], code) do
