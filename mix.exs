@@ -3,11 +3,13 @@ defmodule Compiler.Mixfile do
 
   def project do
     [
-      app: :compiler,
+      app: :cmplr,
       version: "0.1.0",
       elixir: "~> 1.4",
       start_permanent: Mix.env == :prod,
-      deps: deps()
+      build_embedded: Mix.env == :prod,
+      deps: deps(),
+      escript: [main_module: Compiler]
     ]
   end
 

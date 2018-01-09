@@ -32,6 +32,8 @@ defmodule Compiler do
               {:ok, assembly, _} ->
                 {:ok, labels, _} = :label_lexer.string(String.to_charlist(assembly))
 
+                labels = labels |> Enum.map(fn {label, line_no} -> {String.trim(to_string(label), "!"), line_no} end)
+
                 assembly = clear_labels(labels, assembly)
 
                 {:ok, file} = File.open(out_filename, [:write])
@@ -60,13 +62,11 @@ defmodule Compiler do
   end
 
   defp clear_labels([{label, line_no}], code) do
-    label = List.to_string(label)
     code = code |> String.replace(label, "#{line_no}")
     clear_labels([], code)
   end
 
   defp clear_labels([{label, line_no} | labels], code) do
-    label = List.to_string(label)
     code = code |> String.replace(label, "#{line_no}")
     clear_labels(labels, code)
   end

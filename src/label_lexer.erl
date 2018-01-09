@@ -1,4 +1,4 @@
--file("/usr/local/Cellar/erlang/20.2.2/lib/erlang/lib/parsetools-2.1.6/include/leexinc.hrl", 0).
+-file("/usr/local/lib/erlang/lib/parsetools-2.1.6/include/leexinc.hrl", 0).
 %% The source of this file is part of leex distribution, as such it
 %% has the same Copyright as the other files in the leex
 %% distribution. The Copyright is defined in the accompanying file
@@ -13,11 +13,8 @@
 
 %% User code. This is placed here to allow extra attributes.
 -file("src/label_lexer.xrl", 13).
-% get_label(str) -> string:trim(lists:join('', str), both, '!').
-get_label(Str) -> string:trim(Str, both, "!").
-% get_label(Str) -> Str.
 
--file("/usr/local/Cellar/erlang/20.2.2/lib/erlang/lib/parsetools-2.1.6/include/leexinc.hrl", 14).
+-file("/usr/local/lib/erlang/lib/parsetools-2.1.6/include/leexinc.hrl", 14).
 
 format_error({illegal,S}) -> ["illegal characters ",io_lib:write_string(S)];
 format_error({user,S}) -> S.
@@ -308,7 +305,7 @@ adjust_line(T, A, [_|Cs], L) ->
 %% return signal either an unrecognised character or end of current
 %% input.
 
--file("src/label_lexer.erl", 310).
+-file("src/label_lexer.erl", 307).
 yystate() -> 4.
 
 yystate(5, Ics, Line, Tlen, _, _) ->
@@ -377,11 +374,11 @@ yyaction_0() ->
 -compile({inline,yyaction_1/2}).
 -file("src/label_lexer.xrl", 8).
 yyaction_1(TokenChars, TokenLine) ->
-     { token, { get_label (TokenChars), TokenLine - 1 } } .
+     { token, { TokenChars, TokenLine - 1 } } .
 
 -compile({inline,yyaction_2/0}).
 -file("src/label_lexer.xrl", 9).
 yyaction_2() ->
      skip_token .
 
--file("/usr/local/Cellar/erlang/20.2.2/lib/erlang/lib/parsetools-2.1.6/include/leexinc.hrl", 313).
+-file("/usr/local/lib/erlang/lib/parsetools-2.1.6/include/leexinc.hrl", 313).
